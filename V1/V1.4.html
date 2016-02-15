@@ -1,0 +1,906 @@
+<html><head>
+<style>
+body{
+			background-color: #555;
+			-webkit-touch-callout: none;
+			-webkit-user-select  : none;
+			 -khtml-user-select  : none;
+			   -moz-user-select  : none;
+			    -ms-user-select  : none;
+			     -o-user-select  : none;
+			        user-select  : none;
+		}
+h3{
+			color: green;
+		}
+h3 a{
+			text-decoration: none;
+			color: lime !important;
+		}
+h3 a:hover{
+			text-decoration: none;
+			color: yellow !important;
+		}
+.frame{
+	border: solid pink 2px;
+	width:  1024;
+	height: 600;
+	position: relative;
+	/*TopLeft:*/ top: 0px;left: 0px;
+	cursor: crosshair;
+}
+
+.canvasStack{
+	position: relative;
+	/*TopLeft:*/ top: 0px;left: 0px;
+	cursor: crosshair;
+	width:  800;
+	height: 600;
+}
+.canvasStack:hover{
+	/*background-image: url(fadenkreuz.png);/**/
+}
+.canvasLayer{
+	position: absolute;
+	/*TopLeft:*/ top: 0px;left: 0px;
+	border:none;
+}
+
+.menu{
+	position: absolute;
+	top: 0px;
+	left: 800px;
+	cursor: crosshair;
+	width:  224;/*224== 1024-800*/
+	height: 600;	
+}
+.inventory{
+	display		:	inline-block;
+	overflow-y	:	scroll	;
+	overflow-x	:	hidden	;
+	padding		:	  0px	;
+	height		:	500px	;
+	width		:	224px	;
+}
+.item{
+	position		:	relative;
+	/*TopLeft:*/ top: 0px;left: 0px;
+	
+	border-width	:	0px		;
+	font-family		: 	monospace	;
+	display			:	block	;
+	border-style	:	solid	;
+	border-color	:	#000	;
+	background-color:	#444	;
+	color          	:	#0F0	;
+	width: auto;
+}
+
+.item{				border-top-width	:	1px;}
+.item:last-child{	border-bottom-width	:	1px;}
+
+.itemName{
+	display			:	inline-block;
+	width			:	193px		;/*193==224-2*16+1*/
+	white-space		:	nowrap		; 
+    overflow		:	hidden		;
+    text-overflow	:	ellipsis	; 
+}
+.moveArrow{
+	position		: 	absolute	;
+	display			:	inline-block;
+	width			:	16px		;
+	height			:	16px		;
+	text-align		:	center		;
+	margin-right	:	0			;
+	border-style	:	solid		;
+	border-width	:	0px	1px		;
+	border-color	:	#000		;
+	background-color:	#444		;
+	color          	:	#0F0		;	
+}
+
+.moveArrow:hover{
+	background-color:	#0d0	;
+	color          	:	#000	;	
+}
+.down	{right	:	01px;}
+.up		{right	:	17px;}
+
+li.item:first-child > .up, li.item:last-child > .down{
+	border-color	:   #222;
+	background-color:	#999;
+	color           :	#9F9;
+}
+</style>
+<link rel="icon" href="fav.png" type="image/png" />
+<title></title>
+<script type='text/JavaScript'>
+
+// http://www.network-science.de/ascii/
+// Epic, Banner mit 2xSpace zwischen den Buchstaben
+// __________________________________________________
+//|                                                  |
+//|    _________   _         _________  _________    |
+//|    \__   __/  ( (    /|  \__   __/  \__   __/    |
+//|       ) (     |  \  ( |     ) (        ) (       |
+//|       | |     |   \ | |     | |        | |       |
+//|       | |     | (\ \) |     | |        | |       |
+//|       | |     | | \   |     | |        | |       |
+//|    ___) (___  | )  \  |  ___) (___     | |       |
+//|    \_______/  |/    )_)  \_______/     )_(       |
+//|                                                  |
+//|__________________________________________________|
+
+'use strict';
+/// Globale Variablen //
+var ctxOverlay ;// HUD und so
+var ctxFx      ;// Effekte
+var ctxPlayer  ;// Spieler
+var ctxWorld   ;// Welt
+var grid       ;// alle Daten die Welt enthält
+var view       ;// für die aktuelle Grafik-Ausgabe 
+var player     ;// Daten zum Spieler in der Welt
+var keyControl ;// Eingabe
+var pointer    ;// Zeigerposition
+var game       ;// sonstige Variablen des gesamten spiels
+
+window.onload=init;
+
+
+function init(){
+	//// V e r s i o n i e r u n g ////
+	var VERSION        = 1.4;
+	VERSION            = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title     =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	//// Initialisierung ////
+	//ctx = document.getElementById("canMain").getContext("2d");
+	ctxOverlay= document.getElementById("canOverlay").getContext("2d");
+	ctxFx     = document.getElementById("canFx"     ).getContext("2d");      
+	ctxPlayer = document.getElementById("canPlayer" ).getContext("2d"); 
+	ctxWorld  = document.getElementById("canWorld"  ).getContext("2d");  
+	
+	initGrid();
+	initView();
+	initPlayer();
+	initKeyControl();
+	initPointer();
+	initGame();
+	
+	
+	/// Laden der Karte ///
+	var map = new Image();
+	map.src = "menu.png";
+	grid.loadFromImage(map);
+	setInterval(tick, 1000*game.tickInterval);
+}
+
+function initGrid(){
+	//   ####   #####   #  #####  
+	//  #    #  #    #  #  #    # 
+	//  #       #    #  #  #    # 
+	//  #  ###  #####   #  #    # 
+	//  #    #  #   #   #  #    # 
+	//   ####   #    #  #  #####  
+	/// Init. von grid ///
+	grid     = new Object();
+	var d = 3840;
+	grid.dim = new Vector(d,d);
+
+	
+	grid.data = new Array(grid.dim.get(0)); //Array der Zeilen
+	for (var x = 0; x<grid.dim.get(0);x++){ // Interation über die Zeilen
+		grid.data[x] = new Int8Array(grid.dim.get(1));// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dim.get(1);y++){
+			//grid.data[x][y] = Math.ceil(0.01-Math.random()); // Liefert in 1% der Fälle 1
+			grid.data[x][y] = 0;
+		}
+	}
+	/*
+	0 - leerer    Block	
+	1 - gefüllter Block
+		
+	*/
+		
+	grid.fill = 1;// Man füllt mit diesem Wert am Rand auf
+	grid.get  = function(vecVar){ //Problemloses Auslesen des Rasters
+		var x = Math.floor(vecVar.get(0)); //Abrunden
+		var y = Math.floor(vecVar.get(1)); //Abrunden
+		
+		if ((x>grid.dim.get(0)-1)||(y>grid.dim.get(1)-1)) //zu große Werte
+			return grid.fill;
+		if ((x<0)||(y<0)) //zu kleine Werte
+			return grid.fill;
+		return grid.data[x][y];
+	}
+	grid.loadFromImage = function(imgVar){
+		if(imgVar.complete){
+			var xDim = imgVar.width;
+			var yDim = imgVar.height;
+			var can = document.createElement("canvas");
+			can.width = xDim;
+			can.height = yDim;
+			can = can.getContext('2d');
+			can.drawImage(imgVar, 0, 0); //Bild schreiben
+			var data = can.getImageData(0,0, xDim, yDim).data;//Bild informationen laden	
+			
+			var mat = new Array(xDim);
+			for (var x = 0; x<xDim;x++){ // Interation über die Zeilen
+				mat[x] = new Int8Array(yDim)
+				for (var y = 0; y<yDim;y++){
+					var i = (y*xDim+x)*4;
+					mat[x][y] = 0;
+					// Später:   var pixel = [data[i],data[i+1],data[i+2],data[i+3]];
+					if(data[i+0] == 255){ mat[x][y] = 0;continue;	}
+					if(data[i+0] ==   0){ mat[x][y] = 1;continue;	}
+				}
+			}
+			grid.data = mat;
+			grid.dim = new Vector(xDim, yDim);
+			player.pos = grid.dim.scale(.5);
+			console.log("grid loaded from ",imgVar.src);
+		}
+		else{
+			
+			imgVar.onload = function() {
+				grid.loadFromImage(imgVar);
+			}
+			console.log("grid loading attemp with ",imgVar.src);
+		
+		}
+	
+	}
+}
+function initView(){
+	//  #    #  #  ######  #    # 
+	//  #    #  #  #       #    # 
+	//  #    #  #  #####   #    # 
+	//  #    #  #  #       # ## # 
+	//   #  #   #  #       ##  ## 
+	//    ##    #  ######  #    # 
+	/// Init. von view ///
+	view = new Object();
+	view.res    = new Vector(800,600);
+	view.zoom   = new Vector(20,20);
+	view.center = grid.dim.scale(1/2);
+	view.fov    = view.res.mult(view.zoom.inv()).scale(1/2).round().add(new Vector(1,1));
+	// 2*fov = round(res/zoom/2)+1
+	
+	var textureImage = new Image();
+	textureImage.src = "texture1.2.png";
+	view.terrain;
+	textureImage.onload = function(){
+		console.log("Texture loaded");
+		view.terrain=textureImage;
+	}
+		
+	var clear = "rgba(255,255,255,0.7)";
+	var filled = "rgba(000,000,000,0.7)";
+	
+	view.styles =[
+		clear, //Leere 
+		filled,//gefüllter Block 
+		""]; 
+	
+	// Übersetzt eine Position in der Welt mit der Position auf dem Canvas
+	view.getCanvasPos = function(vektorVar){
+		
+		var pos = vektorVar.sub(view.center).mult(view.zoom).add(view.res.scale(1/2));
+		var x = pos.get(0);
+		var y = view.res.sub(pos).get(1);
+		
+		return new Vector(x,y);
+	}
+	
+	// Übersetzt eine Position auf dem Canvas mit der Position in der Welt.
+	view.getRealPos = function(vektorVar){
+		//ToDo
+		return new Vector(0,0);
+	}
+	
+	
+	view.overlay = new Image();
+	view.overlay.src = 'vignete.png';
+	
+	//ctx.setTransform()
+}
+function initPlayer(){
+	//  #####   #         ##    #   #  ######  #####  
+	//  #    #  #        #  #    # #   #       #    # 
+	//  #    #  #       #    #    #    #####   #    # 
+	//  #####   #       ######    #    #       #####  
+	//  #       #       #    #    #    #       #   #  
+	//  #       ######  #    #    #    ######  #    #  
+	/// Init. von player ///
+	player = new Object();
+	player.pos          = grid.dim.scale(1/2);
+	player.size         = new Vector(.75,.75);
+	player.rotation     = 0;
+	player.speed        = 7;
+	player.inventory    = new Inventory("Players Inventory");
+}
+function initKeyControl(){
+	//  #    #  ######  #   # 
+	//  #   #   #        # #  
+	//  ####    #####     #   
+	//  #  #    #         #   
+	//  #   #   #         #   
+	//  #    #  ######    #   
+	/// init. von keyControl ///
+	keyControl          = new Object();
+	
+	var commands = ["rotateLeft","rotateRight","moveForward","moveBackward", "moveLeft","moveRight"];	
+	var keyCodes = [      81    ,      69     ,    87       ,    83        ,     65    ,    68     ];
+	//                     q            e           w             s               a          d                
+	keyControl.codeToCommand = new Array();
+	keyControl.active        = new Array(); 
+	for(var i = 0; i <commands.length; i++){
+	 	keyControl.codeToCommand[keyCodes[i]] = commands[i]; //Kommando für jede Taste;
+	 	keyControl.active[commands[i]] = false;
+	 }
+	
+	document.onkeydown = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		var command = keyControl.codeToCommand[key];
+		setKey(command, true);
+	});
+	
+	document.onkeyup = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		var command = keyControl.codeToCommand[key];
+		if(command === undefined) return;
+		setKey(command, false);
+	});
+}
+
+function initPointer(){
+	pointer      = new Object();
+	pointer.pos  = view.res.scale(1/2); // Mitte;
+	pointer.down = false;
+	//TODO:  pointer.getIngamePos= function(){};
+	pointer.getDelta = function(){	
+		var d = view.getCanvasPos(player.pos).sub(pointer.pos).mult(new Vector(-1,1));
+		return d;
+	};
+	pointer.getAngle = function(){
+		var d = view.getCanvasPos(player.pos).sub(pointer.pos).mult(new Vector(-1,1));
+		return d.atan();
+	};
+	
+	
+	var canvas = document.getElementById("canOverlay");
+	canvas.addEventListener('mousemove', function(evt) {
+		var canvas  = document.getElementById("canOverlay");
+		var rect    = canvas.getBoundingClientRect();
+		pointer.pos = new Vector(evt.clientX - rect.left,evt.clientY - rect.top);
+	}, false);
+	canvas.addEventListener('mousedown',function() {pointer.down = true;},false);
+	canvas.addEventListener('mouseup'  ,function() {pointer.down = false;},false);
+	
+}	
+function initGame(){
+	//   ####     ##    #    #  ###### 
+	//  #    #   #  #   ##  ##  #      
+	//  #       #    #  # ## #  #####  
+	//  #  ###  ######  #    #  #      
+	//  #    #  #    #  #    #  #      
+	//   ####   #    #  #    #  ###### 
+	game = new Object();
+	var hz = 60;
+	game.tickInterval = 1/hz;
+	game.lastTick     = getTime();
+}
+
+//wird in jeder Iteration ausgeführt
+function tick(){
+	var now = getTime();
+	var elapsedTime = now - game.lastTick; 
+	game.lastTick = getTime();
+	draw(elapsedTime);
+	recalc(elapsedTime);
+	
+}
+
+//Zeichnet das Spielfeld
+function draw(deltaTimeVar){
+	// __________________________________________________ 
+	//|                                                  |
+	//|     ______     _______    _______                |
+	//|    (  __  \   (  ____ )  (  ___  )  |\     /|    |
+	//|    | (  \  )  | (    )|  | (   ) |  | )   ( |    |
+	//|    | |   ) |  | (____)|  | (___) |  | | _ | |    |
+	//|    | |   | |  |     __)  |  ___  |  | |( )| |    |
+	//|    | |   ) |  | (\ (     | (   ) |  | || || |    |
+	//|    | (__/  )  | ) \ \__  | )   ( |  | () () |    |
+	//|    (______/   |/   \__/  |/     \|  (_______)    |
+	//|                                                  |
+	//|__________________________________________________| 
+	
+	var pre;
+	//---
+	pre= getTime();
+	drawWorld();
+	//drawTerrain();
+	var worldTime = getTime()-pre;
+	//---
+	pre = getTime();
+	drawPlayer();
+	var playerTime = getTime()-pre;
+	//---
+	
+	var t = Math.exp(0.05,deltaTimeVar)-1;
+	view.center = view.center.scale(1-t).add(player.pos.scale(t));
+	
+	
+	
+	var fps       =  true;
+	var pointer   = !true;
+	var crosshair = !true;
+	drawOverlay(fps,pointer,crosshair,deltaTimeVar,worldTime,playerTime);
+	
+	
+	
+}
+function drawWorld(){
+	ctxWorld.setTransform(1,0,0,1,0,0);
+	ctxWorld.clearRect(0,0,view.res.get(0),view.res.get(1));
+	var temp;
+	temp = view.res.scale(0.5);
+	ctxWorld.translate(temp.get(0),temp.get(1));   //(0,0) in die Mitte setzte
+	temp = 0.0;
+	ctxWorld.rotate(temp); //drehen
+	temp = view.zoom.mult(new Vector(1,-1));
+	ctxWorld.scale(temp.get(0),temp.get(1)); //Ausrichten, y nach oben, x nach rechts
+	temp = view.center.scale(-1);
+	ctxWorld.translate(temp.get(0),temp.get(1)); // Verschiebung nach UL damit v.center in der Mitte ist. 
+	
+	var u = view.center.round().sub(view.fov);
+	var o = view.center.round().add(view.fov);
+	for (var x = u.get(0); x<o.get(0);x++){ // Interation über die Zeilen
+	for (var y = u.get(1); y<o.get(1);y++){ // Iteration der Spalten in einer Zeile
+		var a = new Vector(x,y)//.add(view.center).sub(r);
+		var mat = grid.get(a);
+		
+		/*
+		var style = view.styles[grid.get(view.center.add(a))];
+		style = style(left,top,width, height);
+		ctx.fillStyle =style;
+		*/
+		if (mat == 1){
+			ctxWorld.fillStyle="black";
+		}else{
+			ctxWorld.fillStyle="white";
+		}
+		
+		var b0 = (x%8==7)?0.92:0.96;
+		var b1 = (y%8==7)?0.92:0.96;
+
+		b0 = (x%16==15)?0.87:b0;
+		b1 = (y%16==15)?0.87:b1;
+		ctxWorld.fillRect(x,y,b0,b1);
+	}
+	}
+}
+function drawPlayer(){
+	ctxPlayer.setTransform(1,0,0,1,0,0);
+	ctxPlayer.clearRect(0,0,view.res.get(0),view.res.get(1));
+	var temp;
+	temp = view.res.scale(0.5);
+	ctxPlayer.translate(temp.get(0),temp.get(1));
+	temp = 0.0;
+	ctxPlayer.rotate(temp); //drehen
+	temp = view.zoom.mult(new Vector(1,-1));
+	ctxPlayer.scale(temp.get(0),temp.get(1)); //Ausrichten, y nach oben, x nach rechts
+	temp = view.center.scale(-1);
+	ctxPlayer.translate(temp.get(0),temp.get(1)); // Verschiebung nach UL damit v.center in der Mitte ist. 
+	
+
+	ctxPlayer.fillStyle = "rgba(0,0,255,0.4)";
+	var left   = player.pos.sub(player.size.scale(0.5)).get(0);
+	var top    = player.pos.sub(player.size.scale(0.5)).get(1);
+	var width  = player.size.get(0);
+	var height = player.size.get(1);
+	ctxPlayer.fillRect(left,top,width, height);
+	
+}
+function drawOverlay(fpsVar,pointerVar,crosshairVar,deltaTimeVar,worldTimeVar,playerTimeVar){
+	ctxOverlay.clearRect(0,0,view.res.get(0),view.res.get(1)); // Clears the Screen
+	
+	ctxOverlay.globalAlpha=0.9;
+	ctxOverlay.drawImage(view.overlay,0,0);
+	ctxOverlay.globalAlpha=1;
+	
+	
+	if(fpsVar){
+		//ctxOverlay.fillStyle = "rgba(0,0,0,0.5)";
+		//ctxOverlay.fillRect(0,0,300, 90);
+		
+		ctxOverlay.fillStyle = "#0F0";
+		ctxOverlay.font = "16px Consolas";
+		ctxOverlay.fillText(deltaTimeVar+"s", 0,12);
+		var hz = 1/deltaTimeVar
+		ctxOverlay.fillText(hz+"hz",0,30);
+		ctxOverlay.fillRect(5,35,hz*3, 2);
+		ctxOverlay.fillText(worldTimeVar+ "s (World)", 0,50);
+		ctxOverlay.fillText(playerTimeVar+"s (Player)", 0,70);
+		//console.log(hz)
+	}
+	if(pointerVar){
+		ctxOverlay.lineCap="round";
+		//ctx.setLineDash([1,5]);
+		ctxOverlay.lineWidth = 3;
+		var start = view.getCanvasPos(player.pos);
+		var end   = pointer.pos;
+		
+		ctxOverlay.strokeStyle="rgba(0,125,255,0.5)";
+		ctxOverlay.beginPath();
+		ctxOverlay.moveTo(start.get(0),start.get(1));
+		ctxOverlay.lineTo(end  .get(0),end  .get(1));
+		ctxOverlay.stroke();
+		
+		
+		ctxOverlay.strokeStyle="rgba(0,0,255,0.5)";
+		var angle = -view.getCanvasPos(player.pos).sub(pointer.pos).mult(new Vector(-1,1)).atan();
+		
+		
+		ctxOverlay.beginPath();
+		ctxOverlay.arc(start.get(0),start.get(1),50,0,angle,true);
+		ctxOverlay.stroke();
+		
+		
+		
+	}	
+	if(crosshairVar){
+		//ctx.setLineDash([1,5]);
+		ctxOverlay.lineWidth = 2;
+		ctxOverlay.strokeStyle="rgba(255,0,0,0.5)";
+		
+		ctxOverlay.beginPath();
+		ctxOverlay.moveTo(0              ,0              );
+		ctxOverlay.lineTo(view.res.get(0),view.res.get(1));
+		ctxOverlay.stroke();
+		
+		ctxOverlay.beginPath();
+		ctxOverlay.moveTo(view.res.get(0),0              );
+		ctxOverlay.lineTo(0              ,view.res.get(1));
+		ctxOverlay.stroke();
+		
+		ctxOverlay.beginPath();
+		ctxOverlay.moveTo(0              ,view.res.get(1)/2);
+		ctxOverlay.lineTo(view.res.get(0),view.res.get(1)/2);
+		ctxOverlay.stroke();
+		
+		ctxOverlay.beginPath();
+		ctxOverlay.moveTo(view.res.get(0)/2,0              );
+		ctxOverlay.lineTo(view.res.get(0)/2,view.res.get(1));
+		ctxOverlay.stroke();
+		
+	}
+}
+// update der Positionen
+function recalc(deltaTimeVar){
+	// _______________________________________________________________________
+	//|                                                                       |
+	//|     _______    _______    _______    _______    _          _______    |
+	//|    (  ____ )  (  ____ \  (  ____ \  (  ___  )  ( \        (  ____ \   |
+	//|    | (    )|  | (    \/  | (    \/  | (   ) |  | (        | (    \/   |
+	//|    | (____)|  | (__      | |        | (___) |  | |        | |         |
+	//|    |     __)  |  __)     | |        |  ___  |  | |        | |         |
+	//|    | (\ (     | (        | |        | (   ) |  | |        | |         |
+	//|    | ) \ \__  | (____/\  | (____/\  | )   ( |  | (____/\  | (____/\   |
+	//|    |/   \__/  (_______/  (_______/  |/     \|  (_______/  (_______/   |
+	//|                                                                       |
+	//|_______________________________________________________________________|
+
+	/// Beschleunigen ///
+	var delta = new Vector(0,0);
+	
+	/*
+	if (keyControl.active["moveLeft"])
+		delta = delta.add(player.speed.mult(new Vector(-1,0)).scale(deltaTimeVar));
+	if (keyControl.active["moveRight"])
+		delta = delta.add(player.speed.mult(new Vector(+1,0)).scale(deltaTimeVar));
+	if (keyControl.active["moveDown"])
+		delta = delta.add(player.speed.mult(new Vector(0,-1)).scale(deltaTimeVar));
+	if (keyControl.active["moveUp"])
+		delta = delta.add(player.speed.mult(new Vector(0,+1)).scale(deltaTimeVar));
+	*/
+	
+	if(pointer.down){
+		var norm = pointer.getDelta().norm();
+		var scale = limitTo(norm,0,10)*deltaTimeVar; 
+		delta = pointer.getDelta().scaleTo(scale);
+	}
+	
+	
+	
+	
+	for(var i in [0,1]){ /// Negative Richtungen
+		if (delta.get(i)<0){
+			var min = player.pos.add(delta).get(i);//Bestimmt die Grenzen der Bewegung
+			
+			var near = player.pos.sub(player.size.scale(1/2)           ).floor().get(i);//
+			var far  = player.pos.sub(player.size.scale(1/2)).add(delta).ceil ().get(i)-1;
+						
+			for(var x = near; (x>=far); x--){
+			//von der Nähe aus betrachtet man immer weiter entfernte Blöcke.
+				var innerB = player.pos.sub(player.size.scale(1/2)).floor().get(1-i);
+				var outerB = player.pos.add(player.size.scale(1/2)).ceil ().get(1-i)-1;
+						
+				for(var y = innerB; (y<= outerB); y++){
+					//es wird nun entlang der Kante geprüft, von unten nach oben
+					//var d = x+1+player.sizeX/2;
+					var d = x+1+player.size.scale(1/2).get(i);
+					var a = (i==0)?x:y;
+					var b = (i==0)?y:x;
+					
+					var v = new Vector(a,b);
+					if(grid.get(v)){
+						min = Math.max(d,min);
+						//minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					}
+					
+					
+				}	
+			}
+			min = Math.min(player.pos.get(i),min); //negative Bewegung vermeiden
+			player.pos.setEle(i,min);
+		}
+	}
+	
+	for(var i in [0,1]){ /// Positive Richtungen
+		if (delta.get(i)>0){
+			var max = player.pos.add(delta).get(i);//Bestimmt die Grenzen der Bewegung
+			
+			var near = player.pos.add(player.size.scale(1/2)           ).floor().get(i);//
+			var far  = player.pos.add(player.size.scale(1/2)).add(delta).ceil ().get(i)-1;
+						
+			for(var x = near; (x<=far); x++){//von der Nähe aus betrachtet man immer weiter entfernte Blöcke.
+				var innerB = player.pos.sub(player.size.scale(1/2)).floor().get(1-i);
+				var outerB = player.pos.add(player.size.scale(1/2)).ceil ().get(1-i)-1;
+				for(var y = innerB; (y<= outerB); y++){
+					//es wird nun entlang der Kante geprüft, von unten nach oben
+					var d = x-player.size.scale(1/2).get(i);
+					var a = (i==0)?x:y;
+					var b = (i==0)?y:x;
+					
+					var v = new Vector(a,b);
+					if(grid.get(v)){
+						max = Math.min(d,max);
+						//minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					}
+				}
+			}
+			max = Math.max(player.pos.get(i),max); //negative Bewegung vermeiden
+			player.pos.setEle(i,max);
+		}
+	}
+		
+
+}
+
+/* MISC____________________________________________ 
+|                                                  |
+|     _______   _________   _______    _______     |
+|    (       )  \__   __/  (  ____ \  (  ____ \    |
+|    | () () |     ) (     | (    \/  | (    \/    |
+|    | || || |     | |     | (_____   | |          |
+|    | |(_)| |     | |     (_____  )  | |          |
+|    | |   | |     | |           ) |  | |          |
+|    | )   ( |  ___) (___  /\____) |  | (____/\    |
+|    |/     \|  \_______/  \_______)  (_______/    |
+|                                                  |
+|_________________________________________________*/
+
+/*
+*/
+// liefert einen Zeit Stempel in Sekunden seit 1970-01-01 00:00:00 UTC.
+function getTime(){
+	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+	var now = (new Date()).getTime()/1000;
+	return now;
+}
+//mod(a) mit der Eigenschaft Math.floor(a)+mod(a)=a;
+function mod(a) {
+	return ((a%1)<0 )?( (a%1)+1):(a%1);
+}
+
+function setKey(commandVar, stateVar){ //setKey(key, state) Ein Zustand einer Taste ändert sich 
+	keyControl.active[commandVar] = stateVar;
+}
+
+//Beschränkt x auf das Intervall [min,max]
+function limitTo(xVar,minVar,maxVar){
+	var min = Math.min(minVar,maxVar); // so kann man nicht verwechseln oder falsche Werte erhalten
+	var max = Math.max(minVar,maxVar);
+	
+	if(xVar<min)   // zu klein
+		return min;
+	if(xVar>max)   // zu groß
+		return max;
+	return xVar	   //Ausrechend beschränkt
+}
+//// Vektor Prototyp ////
+function Vector(xVar,yVar){
+	var X = xVar;
+	var Y = yVar;
+	//// Grundrechenarten: ////
+	this.add   = function(vec   ){/// Addieren ///
+		return new Vector(X+vec.get(0),Y+vec.get(1));
+	}
+	this.sub   = function(vec   ){/// Subraieren ///
+		return new Vector(X-vec.get(0),Y-vec.get(1));
+	}
+	this.scale = function(lambda){/// Skalieren ///
+		return new Vector(X*lambda,Y*lambda);
+	}
+	this.mult  = function(vec   ){/// Multiplizieren ///
+		return new Vector(X*vec.get(0),Y*vec.get(1));
+	}
+	this.inv   = function(      ){/// Invertieren ///
+		return new Vector(1/X,1/Y);
+	}
+	//// Runden////
+	this.floor = function(      ){/// Abrunden ///
+		return new Vector(Math.floor(X),Math.floor(Y));
+	}
+	this.round = function(      ){/// Runden ///
+		return new Vector(Math.round(X),Math.round(Y));
+	}
+	this.ceil  = function(      ){/// Runden ///
+		return new Vector(Math.ceil(X),Math.ceil(Y));
+	}
+	this.mod   = function(      ){/// Nachkomma Teil eines Vektors ///
+		return new Vector(frac(X),frac(Y));
+	}
+	var  frac  = function(a     ){/// Nachkomma Teil einer Zahl mit frac(a)+floor(a)=a ///
+		return ((a%1)<0 )?( (a%1)+1):(a%1);
+	} 
+	//// Trigonometrie /////
+	this.rotate  = function(alpha ){/// Drehen ///
+		var abs = this.norm();
+		var beta = this.atan()+alpha;		
+		return new Vector(Math.cos(beta),Math.sin(beta)).scale(abs);
+	}
+	this.norm    = function(){
+		return Math.sqrt(X*X + Y*Y); 
+	}
+	this.atan    = function(){     /// Winkel ///
+		return Math.atan2(Y,X);
+	}
+	this.scaleTo = function(length){
+		var norm = Math.sqrt(X*X + Y*Y);
+		return new Vector(X*length/norm,Y*length/norm)		
+	}
+	//// Setter/Getter ////
+	this.set   = function(xV,yV ){/// Setter ///
+		X = xV; Y = yV;
+	}
+	this.get   = function(i     ){/// Getter ///
+		if (i == 0)
+			return X;
+		if (i == 1)
+			return Y;
+		if (i == -1)
+			return [X,Y];
+		console.log("Invalid Argument of Vector.get(): ",i);
+	}
+	this.setEle= function(i,newV){/// Setter ///
+		if(i==0){X = newV;return}
+		if(i==1){Y = newV;return}
+		console.log("Invalid Argument of Vector.setEle(): ",i);
+	}
+	/*
+	//// Meta ////
+	this.apply = function(xFunV,yFunV){/// Beliebige Funktion ///
+		return new Vector(xFunV(X),yFunV(Y));
+	} 
+	*/
+}
+
+//// Item Prototyp ////
+function Item(nameVar,weightVar){
+	var name   = nameVar;
+	var weight = weightVar; 
+	var nameHTML = escapeHTML(name);
+	
+	
+	function escapeHTML(str) {
+    	var div = document.createElement('div');
+    	div.appendChild(document.createTextNode(str));
+    	return div.innerHTML;
+	}
+	
+	/// Getter ///
+	this.getName = function(){
+		return name;		
+	}
+	this.getWeight = function(){
+		return weight;		
+	}
+	
+	this.amIAnItem="yes";
+}
+/// ///
+
+
+function Inventory (nameVar){
+	this.name = nameVar;
+	var slots = [
+		"head"       , "neck"       ,
+		"leftHand"   , "rightHand"  ,
+		"leftWrist"  , "rightWrist" ,
+		"chest"      , "back"       ,
+		"leftFoot"   , "rightFoot"  ];
+	//mehr?
+		
+	this.getSlots = function(){
+		return slots;
+	}
+	
+	var itemList = new Array();
+	this.addItem = function(itemVar){
+		if(itemVar.amIAnItem === "yes")
+			itemList.push(itemVar);
+		else
+			console.error("Invalid attemp to add an Item to the Inventory",this.name,":",itemVar);
+	}
+	this.getItems = function(){
+		return itemList;		
+	}
+	this.getWeight = function(){
+		var sum = 0;
+		for(var i = 0; i<itemList.length;i++){
+			sum += itemList[i].getWeight();
+		}
+		return sum;
+	}
+	
+	
+}
+/*
+var apple = new Item("Apple",0.234)
+player.inventory.addItem(apple);
+player.inventory.getWeight();
+player.inventory.addItem(apple);
+player.inventory.getWeight();
+
+*/
+
+
+</script>
+</head><body>
+	<h3>
+		<a href="main.html" title="back">&#9664;</a>
+		<span id="title"></span>
+	</h3>
+	<p></p>
+	<hr>
+	<!-- Hauptfenster-->
+	<div id="mainFrame" class="frame">
+		<canvas id="canWorld"   class="canvasLayer" width="800" height="600" ></canvas>	
+		<canvas id="canPlayer"  class="canvasLayer" width="800" height="600" ></canvas>
+		<canvas id="canFx"      class="canvasLayer" width="800" height="600" ></canvas>
+		<canvas id="canOverlay" class="canvasLayer" width="800" height="600" ></canvas>	
+		<div class="menu" id="mainMenu">
+			<a class='icon' id="menu_1" onclick="" href='#menu_1'><span>Punkt Alpha   </span></a>
+			<a class='icon' id="menu_2" onclick="" href='#menu_2'><span>Punkt Beta    </span></a>
+			<a class='icon' id="menu_3" onclick="" href='#menu_3'><span>Punkt Gamma   </span></a>
+			<a class='icon' id="menu_4" onclick="" href='#menu_4'><span>Punkt Delta   </span></a>
+			<a class='icon' id="menu_5" onclick="" href='#menu_5'><span>Punkt Epsilon </span></a>
+			
+			<ul id="inventory" class="inventory">
+				
+				<li class="item"><span class="itemName">Gegenstand 1 d f j g k h d f k j g h d f  </span><a class="up moveArrow"  >&#x25b2;</a><a class="down moveArrow">&#x25bc;</a></li>
+				
+				
+			</ul>
+			
+		</div>
+	</div>
+</body></html>

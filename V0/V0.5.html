@@ -1,0 +1,178 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 2px #25f;
+		}
+		#canMain:hover{
+			border: ridge 2px #2f5;
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAACadoJwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAE4RJREFUeF7t2kdyHEsWBEDe/0BzvT/UBIkWJVI84b7CuiszItIMX4jlf/99+e/nnwAA3GRbwQEuCgDAfTYVnODCAABcZ0vBBS4OAMB5NhTc4AIBABxnO8EALhIAwHs2EwzkQgEAPGcrwQQuFgDAZzYSTOSCAQD8YRvBAi4aAIBNBEu5cABAZ7YQbODiAQAd2UCwkQsIAHRi+0AALiIA0IHNA4G4kABAZbYOBORiAgAV2TgQmAsKAFRi20ACLioAUIFNA4m4sABAZrYMJOTiAgAZ2TCQmAsMAGRiu0ABLjIAkIHNAoW40ABAZLYKFORiAwAR2ShQmAsOAERim0ADLjoAEIFNAo248ADATrYINOTiAwA72CDQmAAAAFayPQBBAAAsYXMAvwkEAGAmWwP4RDAAADPYGMBTAgIAGMm2AN4SFADACDYFcJjAAADusCWA0wQHAHCFDQFcJkAAgDNsB+A2QQIAHGEzAMMIFADgFVsBGE6wAACP2AjANAIGAPjINgCmEzQAwDc2AbCMwAGA3mwBYDnBAwA92QDANgIIAHrR/cB2gggAetD5QBgCCQBq0/VAOIIJAGrS8UBYAgoAatHtQHiCCgBq0OlAGgILAHLT5UA6ggsActLhQFoCDABy0d1AeoIMAHLQ2UAZAg0AYtPVQDmCDQBi0tFAWQIOAGLRzUB5gg4AYtDJQBsCDwD20sVAO4IPAPbQwUBbAhAA1tK9QHuCEADW0LkAPwlEAJhL1wL8QzACwBw6FuAJAQkAY+lWgDcEJQCMoVMBDhKYAHCPLgU4SXACwDU6FOAiAQoA5+hOgJsEKQAcozMBBhGoAPCargQYTLACwGM6EmASAQsAf9ONAJMJWgD4QScCLCJwAehOFwIsJngB6EoHAmwigAHoRvcBbCaIAehC5wEEIZABqE7XAQQjmAGoSscBBCWgAahGtwEEJ6gBqEKnASQhsAHITpcBJCO4AchKhwEkJcAByEZ3ASQnyAHIQmcBFCHQAYhOVwEUI9gBiEpHARQl4AGIRjcBFCfoAYhCJwE0IfAB2E0XATQj+AHYRQcBNKUAAFhN9wA0pwgAWEXnAPCdQgBgNl0DwF8UAwCz6BgAHlIQAIymWwB4SVEAMIpOAeAQhQHAXboEgFMUBwBX6RAALlEgAJylOwC4RZEAcJTOAGAIhQLAO7oCgKEUCwDP6AgAplAwAPxLNwAwlaIB4BedAMASCgcAXQDAUooHoC8dAMAWCgigH9kPwFaKCKAPmQ9ACAoJoD5ZD0AoigmgLhkPQEgKCqAe2Q5AaIoKoA6ZDkAKCgsgP1kOQCqKCyAvGQ5ASgoMIB/ZDUBqigwgD5kNQAkKDSA+WQ1AKYoNIC4ZDUBJCg4gHtkMQGmKDiAOmQxACwoPYD9ZDEArig9gHxkMQEsKEGA92QtAa4oQYB2ZCwBfKUSA+WQtAHygGAHmkbEA8ICCBBhPtgLAC4oSYByZCgAHKEyA+2QpAJygOAGuk6EAcIECBThPdgLADYoU4DiZCQADKFSA92QlAAykWAGek5EAMIGCBfhMNgLARIoW4A+ZCAALKFwAWQgASyleoDMZCAAbKGCgI9kHABspYqATmQcAAShkoANZBwCBKGagMhkHAAEpaKAi2QYAgSlqoBKZBgAJKGygAlkGAIkobiAzGQYACSlwICPZBQCJKXIgE5kFAAUodCADWQUAhSh2IDIZBQAFKXggItkEAIUpeiASmQQADSh8IAJZBACNKH5gJxkEAA0ZAMAOsgcAGjMEgJVkDgBgEABLyBoA4DfDAJhJxgAAnxgIwAyyBQB4ylAARpIpAMBbBgMwgiwBAA4zHIA7ZAgAcJoBAVwhOwCAywwJ4AyZAQDcZlAAR8gKAGAYwwJ4RUYAAMMZGMAjsgEAmMbQAD6SCQDAdAYH8I0sAACWMTygNxkAACxngEBP7j4AsI0hAr248wDAdgYJ9OCuAwBhGCZQmzsOAIRjoEBN7jYAEJahArW40wBAeAYL1OAuAwBpGC6QmzsMAKRjwEBO7i4AkJYhA7m4swBAegYN5OCuAgBlGDYQmzsKAJRj4EBM7iYAUJahA7G4kwBAeQYPxOAuAgBtGD6wlzsIALRjAMEe7h4A0JYhBGu5cwBAewYRrOGuAQD8ZBjBXO4YAMA/DCSYw90CAHjCUIKx3CkAgDcMJhjDXQIAOMhwgnvcIQCAkwwouMbdAQC4yJCCc9wZAICbDCo4xl0BABjEsILX3BEAgMEMLHjM3QAAmMTQgr+5EwAAkxlc8IO7AACwiOFFd+4AAMBiBhhdOfsAAJsYYnTjzAMAbGaQ0YWzDgAQhGFGdc44AEAwBhpVOdsAAEEZalTjTAMABGewUYWzDACQhOFGds4wAEAyBhxZObsAAEkZcmTjzAIAJGfQkYWzCgBQhGFHdM4oAEAxBh5ROZsAAEUZekTjTAIAFGfwEYWzCADQhOHHbs4gAEAzBiC7OHsAAE0ZgqzmzAEANGcQsoqzBgDAd4YhszljAAD8xUBkFmcLAICHDEVGc6YAAHjJYGQUZwkAgEMMR+5yhgAAOMWA5CpnBwCASwxJznJmAAC4xaDkKGcFAIAhDEvecUYAABjKwOQZZwMAgCkMTf7lTAAAMJXByS/OAgAASxieOAMAACxlgPbl2wMAsIUh2o9vDgDAVgZpH741AAAhGKb1+cYAAIRioNbl2wIAEJKhWo9vCgBAaAZrHb4lAAApGK75+YYAAKRiwObl2wEAkJIhm49vBgBAagZtHr4VAAAlGLbx+UYAAJRi4Mbl2wAAUJKhG49vAgBAaQZvHL4FAAAtGL77+QYAALRiAO/jtwcAoCVDeD2/OQAArRnE6/itAQDgK8N4Pr8xAAB8YCDP47cFAIAHDOXx/KYAAPCCwTyO3xIAAA4wnO/zGwIAwAkG9HV+OwAAuMCQPs9vBgAANxjUx/mtAABgAMP6Pb8RAAAMZGA/57cBAIAJDO3P/CYAADCRwf2H3wIAABYwvP0GAACwVOcB7vEBAAAbdBziHh8AALBRp0Hu8QEAAAF0GOYeHwAAEEjlge7xAQAAAVUc6h4fAAAQWKXB7vEBAAAJVBjuHh8AAJBI5gHv8QEAAAllHPIeHwAAkFimQe/xAQAABWQY9h4fAABQSOSB7/EBAAAFRRz6Hh8AAFBYpMHv8QEAAA1EGP4eHwAA0MjOB4DHBwAANLTjIeDxAQAAja18EHh8AAAASx4GHh8AAMBvMx8IHh8AAMAnMx4KHh8AAMBTIx8MHh8AAMBbIx4OHh8AAMBhdx4QHh8AAMBpVx4SHh8AAMBlZx4UHh8AAMBtRx4WHh8AAMAwrx4YHh8AAMBwjx4aHh8AAMA0Hx8cHh8AAAAAAAAAAACn+BcsAABgiUcPDo8QAABguFcPDY8QAABgmCMPDI8QAADgtjMPC48QAADgsisPCo8QAADgtDsPCY8QAADgsBEPCI8QAADgrZEPB48QAADgqRkPBo8QAADgk5kPBY8QAADgtxUPBI8QAABg6cPAIwQAABrb8SDwCAEAgIZ2PgQ8QgAAoJEIDwCPEAAAaCDS8PcIAQCAwiIOfo8QAAAoKPLQ9wgBAIBCMgx8jxAAACgg07D3CAEAgMQyDnqPEAAASCjzkPcIAQCARCoMeI8QAABIoNJw9wgBAIDAKg52jxAAAAio8lD3CAEAgEA6DHSPEAAACKDTMPcIAQCAjToOco8QAADYoPMQ9wgBAICFDHC/AQAALGF4/+G3AACAiQzuz/wmAAAwgaH9nN8GAAAGMrDf8xsBAMAAhvVxfisAALjBoD7PbwYAABcY0tf57QAA4AQD+j6/IQAAHGA4j+O3BACAFwzm8fymAADwgKE8j98WAAA+MJDn8xsDAMBXhvE6fmsAAFoziNfzmwMA0JIhvI/fHgCAVgzg/XwDAABaMHzj8C0AACjN4I3HNwEAoCRDNy7fBgCAUgzc+HwjAABKMGzz8K0AAEjNoM3HNwMAICVDNi/fDgCAVAzY/HxDAABSMFzr8C0BAAjNYK3HNwUAICRDtS7fFgCAUAzU+nxjAABCMEz78K0BANjKIO3HNwcAYAtDtC/fHgCApQxQnAEAAJYwPPnFWQAAYCqDk385EwAATGFo8oyzAQDAUAYm7zgjAAAMYVhylLMCAMAtBiVnOTMAAFxiSHKVswMAwCkGJHc5QwAAHGI4MoqzBADASwYjozlTAAA8ZCgyi7MFAMBfDERmc8YAAPjOMGQVZw0AoDmDkNWcOQCApgxBdnH2AACaMQDZzRkEAGjC8CMKZxEAoDiDj2icSQCAogw9onI2AQCKMfCIzhkFACjCsCMLZxUAIDmDjmycWQCApAw5snJ2AQCSMeDIzhkGAEjCcKMKZxkAIDiDjWqcaQCAoAw1qnK2AQCCMdCozhkHAAjCMKMLZx0AYDODjG6ceQCATQwxunL2AQAWM8Dozh0AAFjE8IIf3AUAgMkMLvibOwEAMImhBY+5GwAAgxlY8Jo7AgAwiGEFx7grAAA3GVRwjjsDAHCRIQXXuDsAACcZUHCPOwQAcJDhBGO4SwAAbxhMMJY7BQDwhKEEc7hbAAD/MJBgLncMAOAnwwjWcNcAgPYMIljLnQMA2jKEYA93DwBoxwCCvdxBAKANwwdicBcBgPIMHojFnQQAyjJ0ICZ3EwAox8CB2NxRAKAMwwZycFcBgPQMGsjFnQUA0jJkICd3FwBIx4CB3NxhACANwwVqcJcBgPAMFqjFnQYAwjJUoCZ3GwAIx0CB2txxACAMwwR6cNcBgO0MEujFnQcAtjFEoCd3HwBYzgCB3mQAALCM4QF8IwsAgOkMDuAjmQAATGNoAI/IBgBgOAMDeEVGAADDGBbAEbICALjNoADOkBkAwGWGBHCF7AAATjMggDtkCABwmOEAjCBLAIC3DAZgJJkCADxlKAAzyBYA4BMDAZhJxgAAvxkGwAqyBgAwCIClZA4ANGYIADvIHgBoyAAAdpJBANCI4gcikEUA0IDCByKRSQBQmKIHIpJNAFCQggcik1EAUIhiBzKQVQBQgEIHMpFZAJCYIgcykl0AkJACBzKTYQCQiOIGKpBlAJCAwgYqkWkAEJiiBiqSbQAQkIIGKpNxABCIYgY6kHUAEIBCBjqReQCwkSIGOpJ9ALCBAgY6k4EAsJDiBZCFALCEwgX4QyYCwESKFuAz2QgAEyhYgOdkJAAMpFgB3pOVADCAQgU4TmYCwA2KFOA82QkAFyhQgOtkKACcoDgB7pOlAHCAwgQYR6YCwAuKEmA82QoADyhIgHlkLAB8oBgB5pO1APCVQgRYR+YC0JoiBFhP9gLQkgIE2EcGA9CK4gPYTxYD0ILCA4hDJgNQmqIDiEc2A1CSggOIS0YDUIpiA4hPVgNQgkIDyENmA5CaIgPIR3YDkJICA8hLhgOQiuICyE+WA5CCwgKoQ6YDEJqiAqhHtgMQkoICqEvGAxCKYgKoT9YDEIJCAuhD5gOwlSIC6Ef2A7CFAgLoSwcAsJTiAUAXALCEwgHgF50AwFSKBoB/6QYAplAwADyjIwAYSrEA8I6uAGAIhQLAUToDgFsUCQBn6Q4ALlEgAFylQwA4RXEAcJcuAeAQhQHAKDoFgJcUBQCj6RYAHlIQAMyiYwD4i2IAYDZdA8B3CgGAVXQOQHOKAIDVdA9AUwoAgF10EEAzgh+A3XQRQBMCH4AodBJAcYIegGh0E0BRAh6AqHQUQDGCHYDodBVAEQIdgCx0FkByghyAbHQXQFICHICsdBhAMoIbgOx0GUASAhuAKnQaQHCCGoBqdBtAUAIagKp0HEAwghmA6nQdQBACGYAudB7AZoIYgG50H8AmAhiArnQgwGKCF4DudCHAIgIXAH7QiQCTCVoA+JtuBJhEwALAYzoSYDDBCgCv6UqAQQQqAByjMwFuEqQAcI7uBLhIgALANToU4CTBCQD36FKAgwQmAIyhUwHeEJQAMJZuBXhCQALAHDoW4B+CEQDm0rUAPwlEAFhD5wLtCUIAWEv3Am0JQADYQwcD7Qg+ANhLFwNtCDwAiEEnA+UJOgCIRTcDZQk4AIhJRwPlCDYAiE1XA2UINADIQWcD6QkyAMhFdwNpCTAAyEmHA+kILgDITZcDaQgsAKhBpwPhCSoAqEW3A2EJKACoSccD4QgmAKhN1wNhCCQA6EHnA9sJIgDoRfcD2wggAOjJBgCWEzwA0JstACwjcACAb2wCYDpBAwB8ZBsA0wgYAOARGwEYTrAAAK/YCsAwAgUAOMJmAG4TJADAGbYDcJkAAQCusCGA0wQHAHCHLQEcJjAAgBFsCuAtQQEAjGRbAE8JCABgBhsD+EQwAAAz2RrAbwIBAFjB5gAEAQCwlO0BjQkAAGAHGwQacvEBgJ1sEWjEhQcAIrBJoAEXHQCIxDaBwlxwACAiGwUKcrEBgMhsFSjEhQYAMrBZoAAXGQDIxHaBxFxgACAjGwYScnEBgMxsGUjEhQUAKrBpIAEXFQCoxLaBwFxQAKAiGwcCcjEBgMpsHQjEhQQAOrB5IAAXEQDoxPaBjVxAAKAjGwg2cPEAgM5sIVjIhQMAsIlgCRcNAOAP2wgmcsEAAD6zkWACFwsA4DlbCQZyoQAA3rOZYAAXCQDgONsJbnCBAADOs6HgAhcHAOA6WwpOcGEAAO6zqeAAFwUAYBzbKpovX/4POFKhpWYkGU0AAAAASUVORK5CYII=);
+		}
+	</style>
+	<title>
+	</title>
+	<script type='text/JavaScript'>
+/// Globale Variablen //
+var ctx;   // Canvas Context
+var grid;  // alle Daten die Welt enthält
+var view;  // für die aktuelle Grafik-Ausgabe 
+var player;// Daten zum Spieler in der Welt
+
+window.onload=init;
+//init() Initialisierung der Variablen;
+function init(){
+	// // > V e r s i o n i e r u n g : < // //
+	var VERSION = 0.5;
+	VERSION = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	// // > I n i t i a l i s i e  r u n g : < // //
+	console.log("init() start");
+	ctx = document.getElementById("canMain").getContext("2d");
+
+	/// Init. von grid ///
+	grid = new Object();
+	grid.dimX = 10; //Grenzen on x und Y Richtung
+	grid.dimY = 10; 
+	grid.data = new Array(grid.dimX); //Array der Zeilen
+	for (var x = 0; x<grid.dimX;x++){ // Interation über die Zeilen
+		grid.data[x] = new Array(grid.dimY);// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dimY;y++){
+			grid.data[x][y] = (Math.random()<0.2); // Liefert in 20% der Fälle TRUE
+		}
+	}
+	grid.fill = true;// Man füllt mit diesem Wert am Rand auf
+	grid.get = function(xVar,yVar){
+		xVar = Math.floor(xVar); // abrunden
+		yVar = Math.floor(yVar);
+		
+		if ((xVar>this.dimX-1)||(yVar>this.dimY-1)) //zu große Werte
+			return this.fill;
+		if ((xVar<0)||(yVar<0)) //zu kleine Werte
+			return this.fill;
+					
+		return grid.data[xVar][yVar];
+	}
+	
+	/// Init. von view ///
+	view = new Object();
+	view.resX = 800; //Auflösung der Ausgabe
+	view.resY = 600;
+	view.zoomX = 16; //Größe eines Einheitsblockes
+	view.zoomY = 16;
+	
+	view.centerX = grid.dimX/2; //Mitte des Betrachteten Bereiches
+	view.centerY = grid.dimY/2;
+	
+	view.fovX = Math.round((view.resX/view.zoomX)/2)+1; // Anzahl der Blöcke in eine Richtung
+	view.fovY = Math.round((view.resY/view.zoomY)/2)+1;
+	
+		
+	
+	/// Init. von player ///
+	player = new Object();
+	player.posX = grid.dimX/2;
+	player.posY = grid.dimY/2;
+	
+	player.sizeX = 0.75;
+	player.sizeY = 0.75;
+	
+	
+	
+	
+	ctx.fillStyle = "black"; 
+	ctx.fillRect(554,454, 0.75, 0.75);
+	tick();
+//	setInterval(tick, 100);
+	console.log("init() ende");
+}
+
+//tick() wird in jeder Iteration ausgeführt
+function tick(){
+	console.log("tick() start");
+	
+	draw();
+	recalc();
+	
+	console.log("tick() ende");
+}
+
+//draw() Zeichnet das Spielfeld
+function draw(){
+	console.log("__draw() ende");
+	ctx.clearRect(0,0,view.resX,view.resY);
+	
+	
+	
+	//// Spielfeld ////
+	for (var x = -view.fovX; x<view.fovX;x++){ // Interation über die Zeilen
+		for (var y = -view.fovY; y<view.fovY;y++){
+			var rx = view.centerX %1; // Verschiebung der Welt um Werte [0,1)
+			var ry = view.centerY %1;
+			
+			var left = (x-rx)*view.zoomX +(view.resX/2); // vond der Mitte ausgehend werden die Blöcke in die Welt gesetzt
+			var top  = (y-ry+1)*view.zoomY +(view.resY/2);
+			
+			var width  = view.zoomX-1; //Macht die Blockränder sichtbar.
+			var height = view.zoomY-1;
+
+			
+			if(grid.get(x+view.centerX,y+view.centerX)){//Der Block ist gefüllt
+				ctx.fillStyle = "rgba(0,0,0,0.4)";
+			}else{ // Der Block ist leer 
+				ctx.fillStyle = "rgba(255,255,255,0.4)";
+			}
+			
+			var bottom = view.resY-top;
+			ctx.fillRect(left,bottom,width, height);
+		}
+	}
+	
+	/// Spieler ///
+	
+	
+	
+	
+	var left =player.posX -view.centerX;
+	var top  =player.posY -view.centerY;
+	
+	left -= player.sizeX/2;
+	top  += player.sizeY/2;
+	
+	left *= view.zoomX;
+	top  *= view.zoomY;
+	
+	left +=(view.resX/2);
+	top  +=(view.resY/2);
+	
+	var width  = player.sizeX*view.zoomX;
+	var height = player.sizeY*view.zoomY;
+	
+	var bottom = view.resY-top;
+	
+	ctx.fillStyle = "rgba(255,0,0,0.4)"; 
+	ctx.fillRect(left,bottom,width, height);
+
+	console.log("__draw() start");
+}
+
+//recalc()
+function recalc(){
+	console.log("__recalc() ende");
+
+	console.log("__recalc() start");
+}
+
+	</script>
+</head><body>
+	<h1 id="title"></h1>
+	<br>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>
+

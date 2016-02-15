@@ -1,0 +1,77 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 2px #25f
+		}
+	</style>
+	<title>
+	</title>
+	<script type='text/JavaScript'>
+/// Globale Variablen //
+var ctx;  // Canvas Context
+var grid; // Objekt das alle Daten über die Welt enthält
+
+window.onload=init;
+function init(){
+	/// Versionierung: ///
+	var VERSION = 0.2;
+	VERSION = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	/// Initialisierung  ///
+	console.log("Init start");
+	ctx = document.getElementById("canMain").getContext("2d");
+	
+	/*//Test: 
+	ctx.font = "16px Consolas";
+	ctx.fillText("Canvas Test", 0,10);
+	*/
+	grid = new Object();
+	grid.dimX = 50;
+	grid.dimY = 50; 
+	grid.data = new Array(grid.dimX); //Array der Zeilen
+	for (var x = 0; x<grid.dimX;x++){ // Interation über die Zeilen
+		grid.data[x] = new Array(grid.dimY);// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dimY;y++){
+			grid.data[x][y] = (Math.random()<0.2); // Liefert in 20% der Fälle TRUE
+		}
+	}
+	grid.fill = true;// Man füllt mit diesem Wert am Rand auf
+	grid.get = function(xVar,yVar){
+		xVar = Math.floor(xVar); // abrunden
+		yVar = Math.floor(yVar);
+		
+		if ((xVar>this.dimX-1)||(yVar>=this.dimY-1)) //zu große Werte
+			return this.fill;
+		if ((xVar<0)||(yVar<0)) //zu kleine Werte
+			return this.fill;
+					
+		return grid.data[xVar][yVar];
+	}
+	// Test: zu groß/klein //
+	console.log(grid.get(-0.5,0.5),grid.get(5,-5),grid.get(grid.dimX+0.5,5),grid.get(5,grid.dimY+0.5));
+	// Test: nicht Ganzzahl
+	console.log(grid.get(0.5,0.5),grid.get(5,5),grid.get(grid.dimX-0.5,5),grid.get(5,grid.dimY-0.5));
+	
+	console.log("Init ende");
+	
+}
+
+
+
+
+
+	</script>
+</head><body>
+	<h1 id="title"></h1>
+	<br>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>
+

@@ -1,0 +1,683 @@
+<html><head>
+	<style>
+		body{
+			background-color: #555;-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			 -khtml-user-select: none;
+			   -moz-user-select: none;
+			    -ms-user-select: none;
+			     -o-user-select: none;
+			        user-select: none;
+		}
+
+		#canMain{
+			border: ridge 2px #25f;
+			cursor: crosshair;
+		}
+		#canMain:hover{
+			border: ridge 2px #2f5;
+			background-image: url(fadenkreuz.png);
+		}
+</style>
+<link rel="shortcut icon" href="fav.png" type="image/png" />
+<link rel="icon"          href="fav.png" type="image/png" />
+<title>
+</title>
+<script type='text/JavaScript'>
+
+// http://www.network-science.de/ascii/
+// Epic, Banner mit 2xSpace zwischen den Buchstaben
+// __________________________________________________
+//|                                                  |
+//|    _________   _         _________  _________    |
+//|    \__   __/  ( (    /|  \__   __/  \__   __/    |
+//|       ) (     |  \  ( |     ) (        ) (       |
+//|       | |     |   \ | |     | |        | |       |
+//|       | |     | (\ \) |     | |        | |       |
+//|       | |     | | \   |     | |        | |       |
+//|    ___) (___  | )  \  |  ___) (___     | |       |
+//|    \_______/  |/    )_)  \_______/     )_(       |
+//|                                                  |
+//|__________________________________________________|
+/// Globale Variablen //
+'use strict';
+var ctx;        // Canvas Context
+var grid;       // alle Daten die Welt enthält
+var view;       // für die aktuelle Grafik-Ausgabe 
+var player;     // Daten zum Spieler in der Welt
+var keyControl; // Eingabe
+var pointer;    // Zeigerposition
+var game;       // sonstige Variablen des gesamten spiels
+
+window.onload=init;
+
+
+function init(){
+	//// V e r s i o n i e r u n g ////
+	var VERSION        = 1.1;
+	VERSION            = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title     =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	//// Initialisierung ////
+	ctx = document.getElementById("canMain").getContext("2d");
+	initGrid();
+	initView();
+	initPlayer();
+	initKeyControl();
+	initPointer();
+	initGame();
+	
+	var canvas = document.createElement("canvas");
+	
+	canvas.width = grid.dim.get(0);
+	canvas.height = grid.dim.get(1);
+	
+	var context = canvas.getContext('2d');
+	var myImg = new Image();
+	myImg.src = "world1.0.png";
+	myImg.onload = (function() {
+		context.drawImage(myImg, 0, 0);
+		var data = context.getImageData(0,0, 500, 500).data;//lädt alles	
+		
+		for (var x = 0; x<grid.dim.get(0);x++){ // Interation über die Zeilen
+		for (var y = 0; y<grid.dim.get(1);y++){
+			var i = (y*500+x)*4;
+			//var pixel = [data[i],data[i+1],data[i+2],data[i+3]]; //vielleicht später
+			
+			if(data[i+0] == 255){
+				grid.data[x][y] = 0;
+				continue;
+			}
+			
+			if(data[i+0] == 0){
+				grid.data[x][y] = 1;
+				continue;
+			}
+					
+		}
+		}
+		
+		setInterval(tick, 1000*game.tickInterval);
+	});
+	
+	
+	
+	
+	
+	
+}
+
+function initGrid(){
+	//   ####   #####   #  #####  
+	//  #    #  #    #  #  #    # 
+	//  #       #    #  #  #    # 
+	//  #  ###  #####   #  #    # 
+	//  #    #  #   #   #  #    # 
+	//   ####   #    #  #  #####  
+	/// Init. von grid ///
+	grid     = new Object();
+	var d = 500;
+	grid.dim = new Vector(d,d);
+
+	
+	grid.data = new Array(grid.dim.get(0)); //Array der Zeilen
+	for (var x = 0; x<grid.dim.get(0);x++){ // Interation über die Zeilen
+		grid.data[x] = new Int8Array(grid.dim.get(1));// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dim.get(1);y++){
+			grid.data[x][y] = Math.ceil(0.01-Math.random()); // Liefert in 5% der Fälle 1
+			//grid.data[x][y] = 0;
+			
+			
+			
+			
+		}
+	}
+	
+	grid.fill = 1;// Man füllt mit diesem Wert am Rand auf
+	grid.get  = function(vecVar){
+		var x = Math.floor(vecVar.get(0));
+		var y = Math.floor(vecVar.get(1));
+		
+		if ((x>grid.dim.get(0)-1)||(y>grid.dim.get(1)-1)) //zu große Werte
+			return grid.fill;
+		if ((x<0)||(y<0)) //zu kleine Werte
+			return grid.fill;
+		return grid.data[x][y];
+	}
+}
+function initView(){
+	//  #    #  #  ######  #    # 
+	//  #    #  #  #       #    # 
+	//  #    #  #  #####   #    # 
+	//  #    #  #  #       # ## # 
+	//   #  #   #  #       ##  ## 
+	//    ##    #  ######  #    # 
+	/// Init. von view ///
+	view = new Object();
+	view.res    = new Vector(800,600);
+	view.zoom   = new Vector(25,25);
+	view.center = grid.dim.scale(1/2);
+	view.fov    = view.res.mult(view.zoom.inv()).scale(1/2).round().add(new Vector(1,1));
+	// 2*fov = round(res/zoom/2)+1
+	
+	
+	var clear = function(left,top,width, height){
+		var res;
+		/*
+		//res=ctx.createLinearGradient(left,top,left+width, top+height);
+		var centerX = left+ width/2;
+		var centerY = top +height/2;
+		var radius = Math.max(width,height)*1.7;
+
+		res=ctx.createRadialGradient(left,top, 0, centerX,centerY, radius);
+		//res=ctx.createRadialGradient(centerX,centerY, 0, centerX,centerY, radius);
+		res.addColorStop(0.00,"rgba(150,150,150,0.7)");
+		res.addColorStop(1.00,"rgba(255,255,255,0.7)");
+		*/
+		res = "rgba(255,255,255,0.7)";
+		return res
+	}
+	
+	var filled = function(left,top,width, height){
+		var res;
+		/*//res=ctx.createLinearGradient(left,top,left+width, top+height);
+		var centerX = left+ width/2;
+		var centerY = top +height/2;
+		var radius = Math.max(width,height)*2;
+		res=ctx.createRadialGradient(left,top, 0, centerX,centerY, radius);
+		res.addColorStop(0.00,"rgba(100,100,100,0.7)");
+		res.addColorStop(1.00,"rgba(000,000,000,0.7)");
+		*/
+		res = "rgba(000,000,000,0.7)";
+		return res
+	}
+	
+	view.styles =[
+		clear, //Leere 
+		filled,//gefüllter Block 
+		]; 
+	
+	
+	view.getCanvasPos = function(vektorVar){
+		
+		var pos = vektorVar.sub(view.center).mult(view.zoom).add(view.res.scale(1/2));
+		var x = pos.get(0);
+		var y = view.res.sub(pos).get(1);
+		
+		return new Vector(x,y);
+	}
+	
+	
+	view.overlay = new Image();
+	view.overlay.src = 'vignete.png';
+    
+
+}
+function initPlayer(){
+	//  #####   #         ##    #   #  ######  #####  
+	//  #    #  #        #  #    # #   #       #    # 
+	//  #    #  #       #    #    #    #####   #    # 
+	//  #####   #       ######    #    #       #####  
+	//  #       #       #    #    #    #       #   #  
+	//  #       ######  #    #    #    ######  #    #  
+	/// Init. von player ///
+	player = new Object();
+	player.pos          = grid.dim.scale(1/2);
+	player.size         = new Vector(.75,.75);
+	player.acceleration = new Vector(10.00,10.00 );
+	player.speed        = new Vector(7 , 7);
+	player.maxSpeed     = new Vector( 3.0 ,  1/0); // 1/0 = +Infinite
+}
+function initKeyControl(){
+	//  #    #  ######  #   # 
+	//  #   #   #        # #  
+	//  ####    #####     #   
+	//  #  #    #         #   
+	//  #   #   #         #   
+	//  #    #  ######    #   
+	/// init. von keyControl ///
+	keyControl          = new Object();
+	keyControl. left    = false; 
+	keyControl.right    = false; 
+	keyControl.   up    = false; 
+	keyControl. down    = false;
+	
+	keyControl. leftKey = 65; //A
+	keyControl.rightKey = 68; //D
+	keyControl.   upKey = 87; //W
+	keyControl. downKey = 83; //S
+	
+	// Alt.:Umsetzung mit keyControl.keyCode["left"] = 65;
+	//      keyControl.active["left"] = false;
+	
+	document.onkeydown = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		setKey(key, true);
+	});
+	
+	document.onkeyup = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		setKey(key, false);
+	});
+}
+function setKey(keyVar, stateVar){ //setKey(key, state) Ein Zustand einer Taste ändert sich 
+	//console.log( keyControl);
+	switch(keyVar) {
+		case keyControl.leftKey:
+			keyControl.left  = stateVar;
+			return;
+		case keyControl.rightKey:
+			keyControl.right =  stateVar;
+			return;
+		case keyControl.upKey:
+			keyControl.up   =  stateVar;
+			return;
+		case keyControl.downKey:
+			keyControl.down =  stateVar;
+			return;
+	}
+}
+function initPointer(){
+	pointer      = new Object();
+	pointer.pos  = view.res.scale(1/2); // Mitte;
+	pointer.down = false;
+	/*TODO: */
+	pointer.getIngamePos= function(){};
+	
+	
+	var canvas = document.getElementById("canMain");
+	canvas.addEventListener('mousemove', function(evt) {
+		var canvas  = document.getElementById("canMain");
+		var rect    = canvas.getBoundingClientRect();
+		pointer.pos = new Vector(evt.clientX - rect.left,evt.clientY - rect.top);
+	}, false);
+	canvas.addEventListener ('mousedown',function() {pointer.down = true;},false);
+	canvas.addEventListener ('mouseup'  ,function() {pointer.down = false;},false);
+	
+}	
+function initGame(){
+	//   ####     ##    #    #  ###### 
+	//  #    #   #  #   ##  ##  #      
+	//  #       #    #  # ## #  #####  
+	//  #  ###  ######  #    #  #      
+	//  #    #  #    #  #    #  #      
+	//   ####   #    #  #    #  ###### 
+	game = new Object();
+	var hz = 60;
+	game.tickInterval = 1/hz;
+	game.lastTick     = getTime();
+}
+
+//wird in jeder Iteration ausgeführt
+function tick(){
+	var now = getTime();
+	var elapsedTime = now - game.lastTick; 
+	game.lastTick = getTime();
+	draw(elapsedTime);
+	recalc(elapsedTime);
+	
+}
+
+//Zeichnet das Spielfeld
+function draw(deltaTimeVar){
+	// __________________________________________________ 
+	//|                                                  |
+	//|     ______     _______    _______                |
+	//|    (  __  \   (  ____ )  (  ___  )  |\     /|    |
+	//|    | (  \  )  | (    )|  | (   ) |  | )   ( |    |
+	//|    | |   ) |  | (____)|  | (___) |  | | _ | |    |
+	//|    | |   | |  |     __)  |  ___  |  | |( )| |    |
+	//|    | |   ) |  | (\ (     | (   ) |  | || || |    |
+	//|    | (__/  )  | ) \ \__  | )   ( |  | () () |    |
+	//|    (______/   |/   \__/  |/     \|  (_______)    |
+	//|                                                  |
+	//|__________________________________________________| 
+	ctx.clearRect(0,0,view.res.get(0),view.res.get(1)); // Clears the Screen
+	var pre = getTime();
+	drawWorld();
+	var worldTime = getTime()-pre;
+	pre = getTime();
+	drawPlayer();
+	var playerTime = getTime()-pre;
+	
+	var t = Math.exp(0.1,deltaTimeVar)-1;
+	view.center = view.center.scale(1-t).add(player.pos.scale(t));
+	
+	
+	ctx.lineCap="round";
+	ctx.setLineDash([1,5]);
+	ctx.lineWidth = 1;
+	ctx.strokeStyle="red";
+	
+	
+	
+	ctx.beginPath();
+	ctx.moveTo(0              ,0              );
+	ctx.lineTo(view.res.get(0),view.res.get(1));
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(view.res.get(0),0              );
+	ctx.lineTo(0              ,view.res.get(1));
+	ctx.stroke();
+	
+	
+	ctx.drawImage(view.overlay, 0, 0);
+
+	
+	
+	
+	
+	
+	/*////////////
+	// Debuging //
+	////////////*/
+	
+	ctx.fillStyle = "lime";
+	ctx.font = "16px Consolas";
+	ctx.fillText(deltaTimeVar+"s", 0,12);
+	var hz = 1/deltaTimeVar
+	ctx.fillText(hz+"hz",0,30);
+	ctx.fillRect(5,35,hz*3, 2);
+	ctx.fillText(worldTime+ "s (World)", 0,50);
+	ctx.fillText(playerTime+"s (Player)", 0,70);
+	
+	
+	
+	
+	
+}
+function drawWorld(){
+	var r = view.center.mod();
+	for (var x = -view.fov.get(0); x<view.fov.get(0);x++){ // Interation über die Zeilen
+	for (var y = -view.fov.get(1); y<view.fov.get(1);y++){ // Iteration der Spalten in einer Zeile
+		var a = new Vector(x,y);
+		
+		//Punkt unten links, des Blockes, gemessen von unten links
+		var corner = a.sub(r).mult(view.zoom).add(view.res.scale(1/2)); // (a-r)*zoom + res/2
+		var size   = view.zoom; //.sub(new Vector(1,1).scale(0.75));
+		
+		var left   = corner.get(0);
+		var top    = view.res.sub(corner).sub(view.zoom).get(1);
+		var width  = size.get(0);
+		var height = size.get(1);
+		
+		
+		left   = Math.round(left  );
+		top    = Math.round(top   );
+		width  = Math.round(width );
+		height = Math.round(height);
+		
+		var mat = grid.get(view.center.add(a));
+		
+		/*
+		var style = view.styles[grid.get(view.center.add(a))];
+		style = style(left,top,width, height);
+		ctx.fillStyle =style;
+		*/
+		if (mat== 1){
+			ctx.fillStyle="black";
+		}else{
+			ctx.fillStyle="white";
+		}
+		
+		
+		ctx.fillRect(left+0,top+0,width-1, height-1);
+	}
+	}
+	
+}	
+function drawPlayer(){ 
+	var center = view.getCanvasPos(player.pos);
+	var size   = view.zoom.mult(player.size).scale(1/2); 
+	
+	var left   = center.sub(size).get(0)-1;
+	var top    = center.sub(size).get(1)-1;
+	var width  = size.scale(2).get(0)+2;
+	var height = size.scale(2).get(1)+2;
+	
+	ctx.fillStyle = "rgba(255,0,0,0.4)"; 
+	ctx.fillRect(left,top,width, height);
+	
+	
+	/*
+	
+	
+	ctx.beginPath();
+	
+	ctx.moveTo(center.get(0),center.get(1));
+	ctx.lineTo(pointer.pos .get(0),pointer.pos .get(1));
+	
+	ctx.lineCap="round";
+	ctx.setLineDash([5,15]);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle="lime";
+	
+	ctx.stroke();
+	*/
+}
+
+// update der Positionen
+function recalc(deltaTimeVar){
+	// _______________________________________________________________________
+	//|                                                                       |
+	//|     _______    _______    _______    _______    _          _______    |
+	//|    (  ____ )  (  ____ \  (  ____ \  (  ___  )  ( \        (  ____ \   |
+	//|    | (    )|  | (    \/  | (    \/  | (   ) |  | (        | (    \/   |
+	//|    | (____)|  | (__      | |        | (___) |  | |        | |         |
+	//|    |     __)  |  __)     | |        |  ___  |  | |        | |         |
+	//|    | (\ (     | (        | |        | (   ) |  | |        | |         |
+	//|    | ) \ \__  | (____/\  | (____/\  | )   ( |  | (____/\  | (____/\   |
+	//|    |/   \__/  (_______/  (_______/  |/     \|  (_______/  (_______/   |
+	//|                                                                       |
+	//|_______________________________________________________________________|
+
+	/// Beschleunigen ///
+	var delta = new Vector(0,0);
+	
+	
+	if (keyControl.left)
+		delta = delta.add(player.speed.mult(new Vector(-1,0)).scale(deltaTimeVar));
+	if (keyControl.right)
+		delta = delta.add(player.speed.mult(new Vector(+1,0)).scale(deltaTimeVar));
+	if (keyControl.down)
+		delta = delta.add(player.speed.mult(new Vector(0,-1)).scale(deltaTimeVar));
+	if (keyControl.up)
+		delta = delta.add(player.speed.mult(new Vector(0,+1)).scale(deltaTimeVar));
+	
+	
+	if(pointer.down){
+		var d = view.getCanvasPos(player.pos).sub(pointer.pos).mult(new Vector(-1,1));
+		var a = limitTo(d.norm(),0,10)*deltaTimeVar;
+		var delta = (new Vector(a,0)).rotate(d.atan());
+	}
+	
+	
+	
+	
+	for(var i in [0,1]){ /// Negative Richtungen
+		if (delta.get(i)<0){
+			var min = player.pos.add(delta).get(i);//Bestimmt die Grenzen der Bewegung
+			
+			var near = player.pos.sub(player.size.scale(1/2)           ).floor().get(i);//
+			var far  = player.pos.sub(player.size.scale(1/2)).add(delta).ceil ().get(i)-1;
+						
+			for(var x = near; (x>=far); x--){
+			//von der Nähe aus betrachtet man immer weiter entfernte Blöcke.
+				var innerB = player.pos.sub(player.size.scale(1/2)).floor().get(1-i);
+				var outerB = player.pos.add(player.size.scale(1/2)).ceil ().get(1-i)-1;
+						
+				for(var y = innerB; (y<= outerB); y++){
+					//es wird nun entlang der Kante geprüft, von unten nach oben
+					//var d = x+1+player.sizeX/2;
+					var d = x+1+player.size.scale(1/2).get(i);
+					var a = (i==0)?x:y;
+					var b = (i==0)?y:x;
+					
+					var v = new Vector(a,b);
+					if(grid.get(v)){
+						min = Math.max(d,min);
+						//minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					}
+					
+					
+				}	
+			}
+			min = Math.min(player.pos.get(i),min); //negative Bewegung vermeiden
+			player.pos.setEle(i,min);
+		}
+	}
+	
+	for(var i in [0,1]){ /// Positive Richtungen
+		if (delta.get(i)>0){
+			var max = player.pos.add(delta).get(i);//Bestimmt die Grenzen der Bewegung
+			
+			var near = player.pos.add(player.size.scale(1/2)           ).floor().get(i);//
+			var far  = player.pos.add(player.size.scale(1/2)).add(delta).ceil ().get(i)-1;
+						
+			for(var x = near; (x<=far); x++){//von der Nähe aus betrachtet man immer weiter entfernte Blöcke.
+				var innerB = player.pos.sub(player.size.scale(1/2)).floor().get(1-i);
+				var outerB = player.pos.add(player.size.scale(1/2)).ceil ().get(1-i)-1;
+				for(var y = innerB; (y<= outerB); y++){
+					//es wird nun entlang der Kante geprüft, von unten nach oben
+					var d = x-player.size.scale(1/2).get(i);
+					var a = (i==0)?x:y;
+					var b = (i==0)?y:x;
+					
+					var v = new Vector(a,b);
+					if(grid.get(v)){
+						max = Math.min(d,max);
+						//minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					}
+				}
+			}
+			max = Math.max(player.pos.get(i),max); //negative Bewegung vermeiden
+			player.pos.setEle(i,max);
+		}
+	}
+		
+
+}
+
+// __________________________________________________ 
+//|                                                  |
+//|     _______   _________   _______    _______     |
+//|    (       )  \__   __/  (  ____ \  (  ____ \    |
+//|    | () () |     ) (     | (    \/  | (    \/    |
+//|    | || || |     | |     | (_____   | |          |
+//|    | |(_)| |     | |     (_____  )  | |          |
+//|    | |   | |     | |           ) |  | |          |
+//|    | )   ( |  ___) (___  /\____) |  | (____/\    |
+//|    |/     \|  \_______/  \_______)  (_______/    |
+//|                                                  |
+//|__________________________________________________|
+
+// liefert einen Zeit Stempel in Sekunden seit 1970-01-01 00:00:00 UTC.
+function getTime(){
+	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+	var now = (new Date()).getTime()/1000;
+	return now;
+}
+//mod(a) mit der Eigenschaft Math.floor(a)+mod(a)=a;
+function mod(a) {
+	return ((a%1)<0 )?( (a%1)+1):(a%1);
+}
+//Beschränkt x auf das Intervall [min,max]
+function limitTo(xVar,minVar,maxVar){
+	var min = Math.min(minVar,maxVar); // so kann man nicht verwechseln oder falsche Werte erhalten
+	var max = Math.max(minVar,maxVar);
+	
+	if(xVar<min)   // zu klein
+		return min;
+	if(xVar>max)   // zu groß
+		return max;
+	return xVar	   //Ausrechend beschränkt
+}
+// Vektor Objekt
+function Vector(xVar,yVar){
+	var X = xVar;
+	var Y = yVar;
+	//// Grundrechenarten: ////
+	this.add   = function(vec   ){/// Addieren ///
+		return new Vector(X+vec.get(0),Y+vec.get(1));
+	}
+	this.sub   = function(vec   ){/// Subraieren ///
+		return new Vector(X-vec.get(0),Y-vec.get(1));
+	}
+	this.scale = function(lambda){/// Skalieren ///
+		return new Vector(X*lambda,Y*lambda);
+	}
+	this.mult  = function(vec   ){/// Multiplizieren ///
+		return new Vector(X*vec.get(0),Y*vec.get(1));
+	}
+	this.inv   = function(      ){/// Invertieren ///
+		return new Vector(1/X,1/Y);
+	}
+	//// Runden////
+	this.floor = function(      ){/// Abrunden ///
+		return new Vector(Math.floor(X),Math.floor(Y));
+	}
+	this.round = function(      ){/// Runden ///
+		return new Vector(Math.round(X),Math.round(Y));
+	}
+	this.ceil  = function(      ){/// Runden ///
+		return new Vector(Math.ceil(X),Math.ceil(Y));
+	}
+	this.mod   = function(      ){/// Nachkomma Teil eines Vektors ///
+		return new Vector(frac(X),frac(Y));
+	}
+	var  frac  = function(a     ){/// Nachkomma Teil einer Zahl mit frac(a)+floor(a)=a ///
+		return ((a%1)<0 )?( (a%1)+1):(a%1);
+	} 
+	//// Trigonometrie /////
+	this.rotate= function(alpha ){/// Drehen ///
+		var abs = this.norm();
+		var beta = this.atan()+alpha;		
+		return new Vector(Math.cos(beta),Math.sin(beta)).scale(abs);
+	}
+	this.norm  = function(){
+		return Math.sqrt(X*X + Y*Y); 
+	}
+	this.atan   = function(){     /// Winkel ///
+		return Math.atan2(Y,X);
+	}
+	//// Setter/Getter ////
+	this.set   = function(xV,yV ){/// Setter ///
+		X = xV; Y = yV;
+	}
+	this.get   = function(i     ){/// Getter ///
+		if (i == 0)
+			return X;
+		if (i == 1)
+			return Y;
+		if (i == -1)
+			return [X,Y];
+		console.log("Invalid Argument of Vector.get(): ",i);
+	}
+	this.setEle= function(i,newV){/// Setter ///
+		if(i==0){X = newV;return}
+		if(i==1){Y = newV;return}
+		console.log("Invalid Argument of Vector.setEle(): ",i);
+	}
+	/*
+	//// Meta ////
+	this.apply = function(xFunV,yFunV){/// Beliebige Funktion ///
+		return new Vector(xFunV(X),yFunV(Y));
+	} 
+	*/
+
+
+}
+
+</script>
+</head><body>
+	<h3 id="title"></h3>
+	<p></p>
+	<hr>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>

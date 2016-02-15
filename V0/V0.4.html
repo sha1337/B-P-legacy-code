@@ -1,0 +1,135 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 2px #25f
+		}
+	</style>
+	<title>
+	</title>
+	<script type='text/JavaScript'>
+/// Globale Variablen //
+var ctx;  // Canvas Context
+var grid; // Objekt das alle Daten über die Welt enthält
+var view;
+
+
+window.onload=init;
+function init(){
+	/// Versionierung: ///
+	var VERSION = 0.4;
+	VERSION = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	/// Initialisierung  ///
+	console.log("Init start");
+	ctx = document.getElementById("canMain").getContext("2d");
+	
+	/*//Test: 
+	ctx.font = "16px Consolas";
+	ctx.fillText("Canvas Test", 0,10);
+	*/
+	grid = new Object();
+	grid.dimX = 10; //Grenzen on x und Y Richtung
+	grid.dimY = 10; 
+	grid.data = new Array(grid.dimX); //Array der Zeilen
+	for (var x = 0; x<grid.dimX;x++){ // Interation über die Zeilen
+		grid.data[x] = new Array(grid.dimY);// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dimY;y++){
+			grid.data[x][y] = (Math.random()<0.2); // Liefert in 20% der Fälle TRUE
+		}
+	}
+	grid.fill = true;// Man füllt mit diesem Wert am Rand auf
+	grid.get = function(xVar,yVar){
+		xVar = Math.floor(xVar); // abrunden
+		yVar = Math.floor(yVar);
+		
+		if ((xVar>this.dimX-1)||(yVar>this.dimY-1)) //zu große Werte
+			return this.fill;
+		if ((xVar<0)||(yVar<0)) //zu kleine Werte
+			return this.fill;
+					
+		return grid.data[xVar][yVar];
+	}
+	
+	view = new Object();
+	view.resX = 800; //Auflösung der Ausgabe
+	view.resY = 600;
+	view.zoomX = 16; //Größe eines Einheitsblockes
+	view.zoomY = 16;
+	
+	view.centerX = grid.dimX/2; //Mitte des Betrachteten Bereiches
+	view.centerY = grid.dimY/2;
+	
+	view.fovX = Math.round((view.resX/view.zoomX)/2)+1; // Anzahl der Blöcke in eine Richtung
+	view.fovY = Math.round((view.resY/view.zoomY)/2)+1;
+	
+	
+	// Test: zu groß/klein //
+	console.log(grid.get(-0.5,0.5),grid.get(5,-5),grid.get(grid.dimX+0.5,5),grid.get(5,grid.dimY+0.5));
+	// Test: nicht Ganzzahl
+	console.log(grid.get(0.5,0.5),grid.get(5,5),grid.get(grid.dimX-0.5,5),grid.get(5,grid.dimY-0.5));
+	
+	console.log("Init ende");
+	setInterval(function(){
+		draw();
+		view.centerX-=(Math.random()-0.5)/2;
+		view.centerY-=(Math.random()-0.5)/2;
+	}, 100);
+	draw();
+}
+function draw(){
+	ctx.clearRect(0,0,800,600);
+	
+	for (var x = -view.fovX; x<view.fovX;x++){ // Interation über die Zeilen
+		for (var y = -view.fovY; y<view.fovY;y++){
+			//
+			var rx = Math.floor(view.centerX)-view.centerX; // Verschiebung 
+			var ry = Math.floor(view.centerY)-view.centerY; // Verschiebung
+			
+			rx = view.centerX %1;
+			ry = view.centerY %1;
+			
+			var left = (x-rx)*view.zoomX+(view.resX/2); // Die position des Blockes ist aber immer gleich
+			var top  = (y-ry)*view.zoomY+(view.resY/2);
+			var width  = view.zoomX-1;
+			var height = view.zoomY-1;
+			
+			/*
+			left = Math.round(left);
+			top = Math.round(top);
+			width = Math.round(width);
+			height = Math.round(height);
+			*/
+			
+			if(grid.get(x+view.centerX,y+view.centerX)){//Ausgelesener Wert ist abh. vom dem Betrachteten Bereich
+				ctx.fillStyle = "black";
+				ctx.fillRect(left,top,width, height);
+			}
+		}
+	}
+	
+	
+	
+	ctx.fillStyle = "red";
+	ctx.font = "16px Consolas";
+	ctx.fillText(view.centerX+" "+view.centerY, 0,10);
+	ctx.fillText(view.centerX%1+" "+view.centerY%1, 0,30);
+}
+
+
+
+
+	</script>
+</head><body>
+	<h1 id="title"></h1>
+	<br>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>
+

@@ -1,0 +1,44 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 2px #25f
+		}
+	</style>
+	<title>
+	</title>
+	<script type='text/JavaScript'>
+/// Globlae Variabelen //
+var ctx;
+
+window.onload=init;
+function init(){
+	/// Versionierung: ///
+	var VERSION = 0.1;
+	VERSION = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	/// Initialisierung  ///
+	console.log("Init start");
+	ctx = document.getElementById("canMain").getContext("2d");
+	
+	//Test:
+	ctx.font = "16px Consolas";
+	ctx.fillText("Canvas Test", 0,10);
+	
+	console.log("Init ende");
+}
+
+	</script>
+</head><body>
+	<h1 id="title"></h1>
+	<br>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>
+

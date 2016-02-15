@@ -1,0 +1,609 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 2px #25f;
+		}
+		#canMain:hover{
+			border: ridge 2px #2f5;
+			background-image: url(data:image/png;base64,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);
+		}
+</style>
+<title>
+</title>
+<script type='text/JavaScript'>
+/**
+######################
+**/
+/*
+#########################
+*/
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+/** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
+
+//Inline
+
+// http://www.network-science.de/ascii/
+// Epic, Banner mit 2xSpace zwischen den Buchstaben
+// __________________________________________________
+//|                                                  |
+//|    _________   _         _________  _________    |
+//|    \__   __/  ( (    /|  \__   __/  \__   __/    |
+//|       ) (     |  \  ( |     ) (        ) (       |
+//|       | |     |   \ | |     | |        | |       |
+//|       | |     | (\ \) |     | |        | |       |
+//|       | |     | | \   |     | |        | |       |
+//|    ___) (___  | )  \  |  ___) (___     | |       |
+//|    \_______/  |/    )_)  \_______/     )_(       |
+//|                                                  |
+//|__________________________________________________|
+/// Globale Variablen //
+var ctx;        // Canvas Context
+var grid;       // alle Daten die Welt enthält
+var view;       // für die aktuelle Grafik-Ausgabe 
+var player;     // Daten zum Spieler in der Welt
+var keyControl; // Eingabe
+var game;       // sonstige Variablen des gesamten spiels
+
+window.onload=init;
+//init() Initialisierung der Variablen;
+function init(){
+	//// V e r s i o n i e r u n g ////
+	var VERSION        = 0.9;
+	VERSION            = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title     =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	//// Initialisierung ////
+	ctx = document.getElementById("canMain").getContext("2d");
+	initGrid();
+	initView();
+	initPlayer();
+	initKeyControl();
+	initGame();
+	
+}
+
+
+function initGrid(){
+	//   ####   #####   #  #####  
+	//  #    #  #    #  #  #    # 
+	//  #       #    #  #  #    # 
+	//  #  ###  #####   #  #    # 
+	//  #    #  #   #   #  #    # 
+	//   ####   #    #  #  #####  
+	/// Init. von grid ///
+	grid     = new Object();
+	grid.dim = new Vector(21,21);
+
+	
+	grid.data = new Array(grid.dim.get(0)); //Array der Zeilen
+	for (var x = 0; x<grid.dim.get(0);x++){ // Interation über die Zeilen
+		grid.data[x] = new Array(grid.dim.get(1));// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dim.get(1);y++){
+			grid.data[x][y] = Math.ceil(0.05-Math.random()); // Liefert in 5% der Fälle 1
+		}
+	}
+
+	grid.fill   = 1;// Man füllt mit diesem Wert am Rand auf
+	grid.getVec = function(vecVar){
+		var x = Math.floor(vecVar.get(0));
+		var y = Math.floor(vecVar.get(1));
+		
+		if ((x>grid.dim.get(0)-1)||(y>grid.dim.get(1)-1)) //zu große Werte
+			return grid.fill;
+		if ((x<0)||(y<0)) //zu kleine Werte
+			return grid.fill;
+		return grid.data[x][y];
+	}
+	
+	///
+	grid.dimX = grid.dim.get(0); //Grenzen on x und Y Richtung
+	grid.dimY = grid.dim.get(1); 
+	grid.get  = function(xVar,yVar){
+		xVar = Math.floor(xVar); // abrunden
+		yVar = Math.floor(yVar);
+		
+		if ((xVar>this.dimX-1)||(yVar>this.dimY-1)) //zu große Werte
+			return this.fill;
+		
+		if ((xVar<0)||(yVar<0)) //zu kleine Werte
+			return this.fill;
+		return grid.data[xVar][yVar];
+	}
+
+}
+function initView(){
+	//  #    #  #  ######  #    # 
+	//  #    #  #  #       #    # 
+	//  #    #  #  #####   #    # 
+	//  #    #  #  #       # ## # 
+	//   #  #   #  #       ##  ## 
+	//    ##    #  ######  #    # 
+	/// Init. von view ///
+	view = new Object();
+	view.res    = new Vector(800,600);
+	view.zoom   = new Vector(50,50);
+	view.center = grid.dim.scale(1/2);
+	view.fov    = view.res.mult(view.zoom.inv()).scale(1/2).round().add(new Vector(1,1));
+	// 2*fov = round(res/zoom/2)+1
+	
+	/*var filled;
+	filled=ctx.createLinearGradient(0,0,view.res.get(0),view.res.get(1));
+	filled.addColorStop(0,"blue");
+	filled.addColorStop(0.25,"lime");
+	filled.addColorStop(0.5,"blue");
+	filled.addColorStop(0.75,"green");
+	filled.addColorStop(1,"blue");
+	*/
+	var filled = function(left,top,width, height){
+		var res;
+		res=ctx.createLinearGradient(left,top,left+width, top+height);
+		res.addColorStop(0.00,"lime");
+		res.addColorStop(0.25,"blue");
+		res.addColorStop(0.50,"red");
+		res.addColorStop(0.75,"yellow");
+		res.addColorStop(1.00,"lime");
+		return res
+	}
+	
+	var clear = function(top,left,width, height){
+		return "rgba(000,000,255,0.33)"
+	}
+	view.styles =
+		[clear, //Leere 
+		filled,//gefüllter Block 
+		]; 
+	
+	
+	
+	
+	
+	
+	/*
+	view.styles =
+		[
+		"rgba(000,000,255,0.33)", //Leere 
+		filled,
+		"rgba(000,000,000,0.4)",  //gefüllter Block 
+		]; 
+	*/
+	view.zoomX   = view.zoom.get(0); //Größe eines Einheitsblockes
+	view.zoomY   = view.zoom.get(1);
+	view.resX    = view.res.get(0); //Auflösung der Ausgabe
+	view.resY    = view.res.get(1);
+	view.centerX = view.center.get(0); //Mitte des Betrachteten Bereiches
+	view.centerY = view.center.get(1);
+	view.fovX    = view.fov.get(0);
+	view.fovY    = view.fov.get(1);
+}
+function initPlayer(){
+	//  #####   #         ##    #   #  ######  #####  
+	//  #    #  #        #  #    # #   #       #    # 
+	//  #    #  #       #    #    #    #####   #    # 
+	//  #####   #       ######    #    #       #####  
+	//  #       #       #    #    #    #       #   #  
+	//  #       ######  #    #    #    ######  #    #  
+	/// Init. von player ///
+	player = new Object();
+	player.pos          = grid.dim.scale(1/2);
+	player.size         = new Vector(.75,.75);
+	player.acceleration = new Vector(10.00,10.00 );
+	player.speed        = new Vector(10 , 10);
+	player.maxSpeed     = new Vector( 3.0 ,  1/0); // 1/0 = +Infinite
+	
+	//ToDo: ersetzen:
+	player.posX          = player.pos.get(0);
+	player.posY          = player.pos.get(1);
+	player.sizeX         = player.size.get(0);
+	player.sizeY         = player.size.get(1);
+	player.accelerationX = player.acceleration.get(0);
+	player.accelerationY = player.acceleration.get(1);
+	player.speedX        = player.speed.get(0);
+	player.speedY        = player.speed.get(1);
+	player.maxSpeedX     = player.maxSpeed.get(0);
+	player.maxSpeedY     = player.maxSpeed.get(1);
+}
+function initKeyControl(){
+	//  #    #  ######  #   # 
+	//  #   #   #        # #  
+	//  ####    #####     #   
+	//  #  #    #         #   
+	//  #   #   #         #   
+	//  #    #  ######    #   
+	/// init. von keyControl ///
+	keyControl          = new Object();
+	keyControl. left    = false; 
+	keyControl.right    = false; 
+	keyControl.   up    = false; 
+	keyControl. down    = false;
+	
+	keyControl. leftKey = 65; //A
+	keyControl.rightKey = 68; //D
+	keyControl.   upKey = 87; //W
+	keyControl. downKey = 83; //S
+	
+	// Alt.:Umsetzung mit keyControl.keyCode["left"] = 65;
+	//      keyControl.active["left"] = false;
+	
+	document.onkeydown = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		setKey(key, true);
+	});
+	
+	document.onkeyup = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		setKey(key, false);
+	});
+}
+function setKey(keyVar, stateVar){ //setKey(key, state) Ein Zustand einer Taste ändert sich 
+	//console.log( keyControl);
+	switch(keyVar) {
+		case keyControl.leftKey:
+			keyControl.left  = stateVar;
+			return;
+		case keyControl.rightKey:
+			keyControl.right =  stateVar;
+			return;
+		case keyControl.upKey:
+			keyControl.up   =  stateVar;
+			return;
+		case keyControl.downKey:
+			keyControl.down =  stateVar;
+			return;
+	}
+}
+function initGame(){
+	//   ####     ##    #    #  ###### 
+	//  #    #   #  #   ##  ##  #      
+	//  #       #    #  # ## #  #####  
+	//  #  ###  ######  #    #  #      
+	//  #    #  #    #  #    #  #      
+	//   ####   #    #  #    #  ###### 
+	game = new Object();
+	game.tickInterval = 1/60;//60Hz
+	game.lastTick     = getTime();
+	tick();
+	setInterval(tick, 1000*game.tickInterval);
+	//setInterval(tick, 10000); //debug
+}
+
+
+// __________________________________________________
+//|                                                  |
+//|     ______     _______    _______                |
+//|    (  __  \   (  ____ )  (  ___  )  |\     /|    |
+//|    | (  \  )  | (    )|  | (   ) |  | )   ( |    |
+//|    | |   ) |  | (____)|  | (___) |  | | _ | |    |
+//|    | |   | |  |     __)  |  ___  |  | |( )| |    |
+//|    | |   ) |  | (\ (     | (   ) |  | || || |    |
+//|    | (__/  )  | ) \ \__  | )   ( |  | () () |    |
+//|    (______/   |/   \__/  |/     \|  (_______)    |
+//|                                                  |
+//|__________________________________________________|
+//draw() Zeichnet das Spielfeld
+function draw(deltaTimeVar){
+	ctx.clearRect(0,0,view.res.get(0),view.res.get(1)); // Clears the Screen
+	var pre = getTime();
+	drawWorld();
+	var worldTime = getTime()-pre;
+	pre = getTime();
+	drawPlayer();
+	var playerTime = getTime()-pre;
+	
+	/*////////////
+	// Debuging //
+	////////////*/
+	
+	ctx.fillStyle = "lime";
+	ctx.font = "16px Consolas";
+	ctx.fillText(deltaTimeVar+"s", 0,10);
+	var hz = 1/deltaTimeVar
+	ctx.fillText(hz+"hz", 00,30);
+	ctx.fillRect(5,35,hz*3, 2);
+	ctx.fillText(worldTime+ "s (World)", 0,60);
+	ctx.fillText(playerTime+"s (Player)", 0,80);
+	
+	
+	
+	
+	
+}
+function drawWorld(){
+	var r = view.center.mod();
+	for (var x = -view.fov.get(0); x<view.fov.get(0);x++){ // Interation über die Zeilen
+	for (var y = -view.fov.get(1); y<view.fov.get(1);y++){ // Iteration der Spalten in einer Zeile
+		var a = new Vector(x,y);
+		
+		//Punkt unten links, des Blockes, gemessen von unten links
+		var corner = a.sub(r).mult(view.zoom).add(view.res.scale(1/2)); // (a-r)*zoom + res/2
+		var size   = view.zoom; //.sub(new Vector(1,1).scale(0.75));
+		
+		var left   = corner.get(0);
+		var top    = view.res.sub(corner).sub(view.zoom).get(1);
+		var width  = size.get(0);
+		var height = size.get(1);
+		
+		
+		var style = view.styles[grid.getVec(view.center.add(a))];
+		style = style(left,top,width, height);
+		ctx.fillStyle =style;
+		
+		
+		ctx.fillRect(left+0,top+0,width-0, height-0);
+	}
+	}
+	
+}	
+function drawPlayer(){ 
+	var center = player.pos.sub(view.center); //Punkt unten links, des Blockes, gemessen von unten links
+	var size   = view.zoom.mult(player.size); 
+	
+	//linke untere Ecke vom Block gemessen von unten links
+	var corner = center.sub(player.size.scale(1/2)).mult(view.zoom).add(view.res.scale(1/2));
+	
+	
+	var left   = corner.get(0);
+	var top    = view.res.sub(corner.add(size)).get(1);
+	var width  = size.get(0);
+	var height = size.get(0);
+	
+	ctx.fillStyle = "rgba(0,255,255,0.4)"; 
+	//console.log("new",left,top,width, height);
+	ctx.fillRect(left,top,width, height);
+}
+
+// _______________________________________________________________________
+//|                                                                       |
+//|     _______    _______    _______    _______    _          _______    |
+//|    (  ____ )  (  ____ \  (  ____ \  (  ___  )  ( \        (  ____ \   |
+//|    | (    )|  | (    \/  | (    \/  | (   ) |  | (        | (    \/   |
+//|    | (____)|  | (__      | |        | (___) |  | |        | |         |
+//|    |     __)  |  __)     | |        |  ___  |  | |        | |         |
+//|    | (\ (     | (        | |        | (   ) |  | |        | |         |
+//|    | ) \ \__  | (____/\  | (____/\  | )   ( |  | (____/\  | (____/\   |
+//|    |/   \__/  (_______/  (_______/  |/     \|  (_______/  (_______/   |
+//|                                                                       |
+//|_______________________________________________________________________|
+//recalc()
+function recalc(deltaTimeVar){
+	/// Beschleunigen ///
+	var delta = new Vector(0,0);
+	var deltaX=0;
+	var deltaY=0;
+	
+	if (keyControl.left)
+		deltaX -= deltaTimeVar*player.accelerationX;
+	if (keyControl.right)
+		deltaX += deltaTimeVar*player.accelerationX;
+	if (keyControl.down)
+		deltaY -= deltaTimeVar*player.accelerationY;
+	if (keyControl.up)
+		deltaY += deltaTimeVar*player.accelerationY;
+	
+	
+	if (keyControl.left)
+		delta = delta.add(player.speed.mult(new Vector(-1,0)).scale(deltaTimeVar));
+	if (keyControl.right)
+		delta = delta.add(player.speed.mult(new Vector(+1,0)).scale(deltaTimeVar));
+	if (keyControl.down)
+		delta = delta.add(player.speed.mult(new Vector(0,-1)).scale(deltaTimeVar));
+	if (keyControl.up)
+		delta = delta.add(player.speed.mult(new Vector(0,+1)).scale(deltaTimeVar));
+	
+	
+	for(var i in [0,1]){ /// Negative Richtungen
+		if (delta.get(i)<0){
+			var min = player.pos.add(delta).get(i);//Bestimmt die Grenzen der Bewegung
+			
+			var near = player.pos.sub(player.size.scale(1/2)           ).floor().get(i);//
+			var far  = player.pos.sub(player.size.scale(1/2)).add(delta).ceil ().get(i)-1;
+						
+			for(var x = near; (x>=far); x--){
+			//von der Nähe aus betrachtet man immer weiter entfernte Blöcke.
+				var innerB = player.pos.sub(player.size.scale(1/2)).floor().get(1-i);
+				var outerB = player.pos.add(player.size.scale(1/2)).ceil ().get(1-i)-1;
+						
+				for(var y = innerB; (y<= outerB); y++){
+					//es wird nun entlang der Kante geprüft, von unten nach oben
+					//var d = x+1+player.sizeX/2;
+					var d = x+1+player.size.scale(1/2).get(i);
+					var a = (i==0)?x:y;
+					var b = (i==0)?y:x;
+					
+					if(grid.get(a,b)){
+						min = Math.max(d,min);
+						//minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					}
+					
+					
+				}	
+			}
+			min = Math.min(player.pos.get(i),min); //negative Bewegung vermeiden
+			//minX = Math.min(player.posX, minX);//man soll sich nicht in die Gegenrichtung bewegen
+			player.pos.setEle(i,min);
+			player.posX = player.pos.get(0);
+			player.posY = player.pos.get(1);
+		}
+	}
+	
+	for(var i in [0,1]){ /// Positive Richtungen
+		if (delta.get(i)>0){
+			var max = player.pos.add(delta).get(i);//Bestimmt die Grenzen der Bewegung
+			
+			var near = player.pos.add(player.size.scale(1/2)           ).floor().get(i);//
+			var far  = player.pos.add(player.size.scale(1/2)).add(delta).ceil ().get(i)-1;
+						
+			for(var x = near; (x<=far); x++){//von der Nähe aus betrachtet man immer weiter entfernte Blöcke.
+				var innerB = player.pos.sub(player.size.scale(1/2)).floor().get(1-i);
+				var outerB = player.pos.add(player.size.scale(1/2)).ceil ().get(1-i)-1;
+				for(var y = innerB; (y<= outerB); y++){
+					//es wird nun entlang der Kante geprüft, von unten nach oben
+					var d = x-player.size.scale(1/2).get(i);
+					var a = (i==0)?x:y;
+					var b = (i==0)?y:x;
+					
+					if(grid.get(a,b)){
+						max = Math.min(d,max);
+						//minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					}
+				}
+			}
+			max = Math.max(player.pos.get(i),max); //negative Bewegung vermeiden
+			//minX = Math.min(player.posX, minX);//man soll sich nicht in die Gegenrichtung bewegen
+			player.pos.setEle(i,max);
+			player.posX = player.pos.get(0);
+			player.posY = player.pos.get(1);
+		}
+	}
+		
+	var t = Math.exp(0.1,deltaTimeVar)-1;
+	view.center = view.center.scale(1-t).add(player.pos.scale(t));
+}
+
+
+
+
+// __________________________________________________ 
+//|                                                  |
+//|     _______   _________   _______    _______     |
+//|    (       )  \__   __/  (  ____ \  (  ____ \    |
+//|    | () () |     ) (     | (    \/  | (    \/    |
+//|    | || || |     | |     | (_____   | |          |
+//|    | |(_)| |     | |     (_____  )  | |          |
+//|    | |   | |     | |           ) |  | |          |
+//|    | )   ( |  ___) (___  /\____) |  | (____/\    |
+//|    |/     \|  \_______/  \_______)  (_______/    |
+//|                                                  |
+//|__________________________________________________|
+
+//tick() wird in jeder Iteration ausgeführt
+function tick(){
+	var now = getTime();
+	var elapsedTime = now - game.lastTick; 
+	game.lastTick = getTime();
+	draw(elapsedTime);
+	recalc(elapsedTime);
+	
+}
+
+// liefert einen Zeit Stempel in Sekunden seit 1970-01-01 00:00:00 UTC.
+function getTime(){
+	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+	var now = (new Date()).getTime()/1000;
+	return now;
+}
+
+//mod(a) mit der Eigenschaft Math.floor(a)+mod(a)=a;
+function mod(a) {
+	return ((a%1)<0 )?( (a%1)+1):(a%1);
+}
+
+//Beschränkt x auf das Intervall [min,max]
+function limitTo(xVar,minVar,maxVar){
+	var min = Math.min(minVar,maxVar); // so kann man nicht verwechseln oder falsche Werte erhalten
+	var max = Math.max(minVar,maxVar);
+	
+	if(xVar<min)   // zu klein
+		return min;
+	if(xVar>max)   // zu groß
+		return max;
+	return xVar	      //Ausrechend beschränkt
+}
+
+function Vector(xVar,yVar){
+	var X = xVar;
+	var Y = yVar;
+	//// Grundrechenarten: ////
+	this.add   = function(vec   ){/// Addieren ///
+		return new Vector(X+vec.get(0),Y+vec.get(1));
+	}
+	this.sub   = function(vec   ){/// Subraieren ///
+		return new Vector(X-vec.get(0),Y-vec.get(1));
+	}
+	this.scale = function(lambda){/// Skalieren ///
+		return new Vector(X*lambda,Y*lambda);
+	}
+	this.mult  = function(vec   ){/// Multiplizieren ///
+		return new Vector(X*vec.get(0),Y*vec.get(1));
+	}
+	this.inv   = function(      ){/// Invertieren ///
+		return new Vector(1/X,1/Y);
+	}
+	//// Runden////
+	this.floor = function(      ){/// Abrunden ///
+		return new Vector(Math.floor(X),Math.floor(Y));
+	}
+	this.round = function(      ){/// Runden ///
+		return new Vector(Math.round(X),Math.round(Y));
+	}
+	this.ceil  = function(      ){/// Runden ///
+		return new Vector(Math.ceil(X),Math.ceil(Y));
+	}
+	this.mod   = function(      ){/// Nachkomma Teil eines Vektors ///
+		return new Vector(frac(X),frac(Y));
+	}
+	var  frac  = function(a     ){/// Nachkomma Teil einer Zahl mit frac(a)+floor(a)=a ///
+		return ((a%1)<0 )?( (a%1)+1):(a%1);
+	} 
+	//// Setter/Getter ////
+	this.set   = function(xV,yV ){/// Setter ///
+		X = xV; Y = yV;
+	}
+	this.get   = function(i     ){/// Getter ///
+		if (i == 0)
+			return X;
+		if (i == 1)
+			return Y;
+		if (i == -1)
+			return [X,Y];
+		console.log("Invalid Argument of Vector.get(): ",i);
+	}
+	this.setEle= function(i,newV){/// Setter ///
+		if(i==0){X = newV;return}
+		if(i==1){Y = newV;return}
+		console.log("Invalid Argument of Vector.setEle(): ",i);
+	}
+	//// Meta ////
+	this.apply = function(xFunV,yFunV){/// Beliebige Funktion ///
+		return new Vector(xFunV(X),yFunV(Y));
+	} 
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</head><body>
+	<h3 id="title"></h3>
+	<hr>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>

@@ -1,0 +1,30 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 10px #25f
+		}
+	</style>
+	<title>
+	</title>
+	<script type='text/JavaScript'>
+window.onload=init;
+function init(){
+	var VERSION = 0.0;
+	VERSION = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+}
+		
+	</script>
+</head><body>
+	<h1 id="title"></h1>
+	<br>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>
+

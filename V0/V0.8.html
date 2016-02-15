@@ -1,0 +1,604 @@
+<html><head>
+	<style>
+		body{
+			background-color: #777;
+		}
+
+		#canMain{
+			border: ridge 2px #25f;
+		}
+		#canMain:hover{
+			border: ridge 2px #2f5;
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAACadoJwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAE4RJREFUeF7t2kdyHEsWBEDe/0BzvT/UBIkWJVI84b7CuiszItIMX4jlf/99+e/nnwAA3GRbwQEuCgDAfTYVnODCAABcZ0vBBS4OAMB5NhTc4AIBABxnO8EALhIAwHs2EwzkQgEAPGcrwQQuFgDAZzYSTOSCAQD8YRvBAi4aAIBNBEu5cABAZ7YQbODiAQAd2UCwkQsIAHRi+0AALiIA0IHNA4G4kABAZbYOBORiAgAV2TgQmAsKAFRi20ACLioAUIFNA4m4sABAZrYMJOTiAgAZ2TCQmAsMAGRiu0ABLjIAkIHNAoW40ABAZLYKFORiAwAR2ShQmAsOAERim0ADLjoAEIFNAo248ADATrYINOTiAwA72CDQmAAAAFayPQBBAAAsYXMAvwkEAGAmWwP4RDAAADPYGMBTAgIAGMm2AN4SFADACDYFcJjAAADusCWA0wQHAHCFDQFcJkAAgDNsB+A2QQIAHGEzAMMIFADgFVsBGE6wAACP2AjANAIGAPjINgCmEzQAwDc2AbCMwAGA3mwBYDnBAwA92QDANgIIAHrR/cB2gggAetD5QBgCCQBq0/VAOIIJAGrS8UBYAgoAatHtQHiCCgBq0OlAGgILAHLT5UA6ggsActLhQFoCDABy0d1AeoIMAHLQ2UAZAg0AYtPVQDmCDQBi0tFAWQIOAGLRzUB5gg4AYtDJQBsCDwD20sVAO4IPAPbQwUBbAhAA1tK9QHuCEADW0LkAPwlEAJhL1wL8QzACwBw6FuAJAQkAY+lWgDcEJQCMoVMBDhKYAHCPLgU4SXACwDU6FOAiAQoA5+hOgJsEKQAcozMBBhGoAPCargQYTLACwGM6EmASAQsAf9ONAJMJWgD4QScCLCJwAehOFwIsJngB6EoHAmwigAHoRvcBbCaIAehC5wEEIZABqE7XAQQjmAGoSscBBCWgAahGtwEEJ6gBqEKnASQhsAHITpcBJCO4AchKhwEkJcAByEZ3ASQnyAHIQmcBFCHQAYhOVwEUI9gBiEpHARQl4AGIRjcBFCfoAYhCJwE0IfAB2E0XATQj+AHYRQcBNKUAAFhN9wA0pwgAWEXnAPCdQgBgNl0DwF8UAwCz6BgAHlIQAIymWwB4SVEAMIpOAeAQhQHAXboEgFMUBwBX6RAALlEgAJylOwC4RZEAcJTOAGAIhQLAO7oCgKEUCwDP6AgAplAwAPxLNwAwlaIB4BedAMASCgcAXQDAUooHoC8dAMAWCgigH9kPwFaKCKAPmQ9ACAoJoD5ZD0AoigmgLhkPQEgKCqAe2Q5AaIoKoA6ZDkAKCgsgP1kOQCqKCyAvGQ5ASgoMIB/ZDUBqigwgD5kNQAkKDSA+WQ1AKYoNIC4ZDUBJCg4gHtkMQGmKDiAOmQxACwoPYD9ZDEArig9gHxkMQEsKEGA92QtAa4oQYB2ZCwBfKUSA+WQtAHygGAHmkbEA8ICCBBhPtgLAC4oSYByZCgAHKEyA+2QpAJygOAGuk6EAcIECBThPdgLADYoU4DiZCQADKFSA92QlAAykWAGek5EAMIGCBfhMNgLARIoW4A+ZCAALKFwAWQgASyleoDMZCAAbKGCgI9kHABspYqATmQcAAShkoANZBwCBKGagMhkHAAEpaKAi2QYAgSlqoBKZBgAJKGygAlkGAIkobiAzGQYACSlwICPZBQCJKXIgE5kFAAUodCADWQUAhSh2IDIZBQAFKXggItkEAIUpeiASmQQADSh8IAJZBACNKH5gJxkEAA0ZAMAOsgcAGjMEgJVkDgBgEABLyBoA4DfDAJhJxgAAnxgIwAyyBQB4ylAARpIpAMBbBgMwgiwBAA4zHIA7ZAgAcJoBAVwhOwCAywwJ4AyZAQDcZlAAR8gKAGAYwwJ4RUYAAMMZGMAjsgEAmMbQAD6SCQDAdAYH8I0sAACWMTygNxkAACxngEBP7j4AsI0hAr248wDAdgYJ9OCuAwBhGCZQmzsOAIRjoEBN7jYAEJahArW40wBAeAYL1OAuAwBpGC6QmzsMAKRjwEBO7i4AkJYhA7m4swBAegYN5OCuAgBlGDYQmzsKAJRj4EBM7iYAUJahA7G4kwBAeQYPxOAuAgBtGD6wlzsIALRjAMEe7h4A0JYhBGu5cwBAewYRrOGuAQD8ZBjBXO4YAMA/DCSYw90CAHjCUIKx3CkAgDcMJhjDXQIAOMhwgnvcIQCAkwwouMbdAQC4yJCCc9wZAICbDCo4xl0BABjEsILX3BEAgMEMLHjM3QAAmMTQgr+5EwAAkxlc8IO7AACwiOFFd+4AAMBiBhhdOfsAAJsYYnTjzAMAbGaQ0YWzDgAQhGFGdc44AEAwBhpVOdsAAEEZalTjTAMABGewUYWzDACQhOFGds4wAEAyBhxZObsAAEkZcmTjzAIAJGfQkYWzCgBQhGFHdM4oAEAxBh5ROZsAAEUZekTjTAIAFGfwEYWzCADQhOHHbs4gAEAzBiC7OHsAAE0ZgqzmzAEANGcQsoqzBgDAd4YhszljAAD8xUBkFmcLAICHDEVGc6YAAHjJYGQUZwkAgEMMR+5yhgAAOMWA5CpnBwCASwxJznJmAAC4xaDkKGcFAIAhDEvecUYAABjKwOQZZwMAgCkMTf7lTAAAMJXByS/OAgAASxieOAMAACxlgPbl2wMAsIUh2o9vDgDAVgZpH741AAAhGKb1+cYAAIRioNbl2wIAEJKhWo9vCgBAaAZrHb4lAAApGK75+YYAAKRiwObl2wEAkJIhm49vBgBAagZtHr4VAAAlGLbx+UYAAJRi4Mbl2wAAUJKhG49vAgBAaQZvHL4FAAAtGL77+QYAALRiAO/jtwcAoCVDeD2/OQAArRnE6/itAQDgK8N4Pr8xAAB8YCDP47cFAIAHDOXx/KYAAPCCwTyO3xIAAA4wnO/zGwIAwAkG9HV+OwAAuMCQPs9vBgAANxjUx/mtAABgAMP6Pb8RAAAMZGA/57cBAIAJDO3P/CYAADCRwf2H3wIAABYwvP0GAACwVOcB7vEBAAAbdBziHh8AALBRp0Hu8QEAAAF0GOYeHwAAEEjlge7xAQAAAVUc6h4fAAAQWKXB7vEBAAAJVBjuHh8AAJBI5gHv8QEAAAllHPIeHwAAkFimQe/xAQAABWQY9h4fAABQSOSB7/EBAAAFRRz6Hh8AAFBYpMHv8QEAAA1EGP4eHwAA0MjOB4DHBwAANLTjIeDxAQAAja18EHh8AAAASx4GHh8AAMBvMx8IHh8AAMAnMx4KHh8AAMBTIx8MHh8AAMBbIx4OHh8AAMBhdx4QHh8AAMBpVx4SHh8AAMBlZx4UHh8AAMBtRx4WHh8AAMAwrx4YHh8AAMBwjx4aHh8AAMA0Hx8cHh8AAAAAAAAAAACn+BcsAABgiUcPDo8QAABguFcPDY8QAABgmCMPDI8QAADgtjMPC48QAADgsisPCo8QAADgtDsPCY8QAADgsBEPCI8QAADgrZEPB48QAADgqRkPBo8QAADgk5kPBY8QAADgtxUPBI8QAABg6cPAIwQAABrb8SDwCAEAgIZ2PgQ8QgAAoJEIDwCPEAAAaCDS8PcIAQCAwiIOfo8QAAAoKPLQ9wgBAIBCMgx8jxAAACgg07D3CAEAgMQyDnqPEAAASCjzkPcIAQCARCoMeI8QAABIoNJw9wgBAIDAKg52jxAAAAio8lD3CAEAgEA6DHSPEAAACKDTMPcIAQCAjToOco8QAADYoPMQ9wgBAICFDHC/AQAALGF4/+G3AACAiQzuz/wmAAAwgaH9nN8GAAAGMrDf8xsBAMAAhvVxfisAALjBoD7PbwYAABcY0tf57QAA4AQD+j6/IQAAHGA4j+O3BACAFwzm8fymAADwgKE8j98WAAA+MJDn8xsDAMBXhvE6fmsAAFoziNfzmwMA0JIhvI/fHgCAVgzg/XwDAABaMHzj8C0AACjN4I3HNwEAoCRDNy7fBgCAUgzc+HwjAABKMGzz8K0AAEjNoM3HNwMAICVDNi/fDgCAVAzY/HxDAABSMFzr8C0BAAjNYK3HNwUAICRDtS7fFgCAUAzU+nxjAABCMEz78K0BANjKIO3HNwcAYAtDtC/fHgCApQxQnAEAAJYwPPnFWQAAYCqDk385EwAATGFo8oyzAQDAUAYm7zgjAAAMYVhylLMCAMAtBiVnOTMAAFxiSHKVswMAwCkGJHc5QwAAHGI4MoqzBADASwYjozlTAAA8ZCgyi7MFAMBfDERmc8YAAPjOMGQVZw0AoDmDkNWcOQCApgxBdnH2AACaMQDZzRkEAGjC8CMKZxEAoDiDj2icSQCAogw9onI2AQCKMfCIzhkFACjCsCMLZxUAIDmDjmycWQCApAw5snJ2AQCSMeDIzhkGAEjCcKMKZxkAIDiDjWqcaQCAoAw1qnK2AQCCMdCozhkHAAjCMKMLZx0AYDODjG6ceQCATQwxunL2AQAWM8Dozh0AAFjE8IIf3AUAgMkMLvibOwEAMImhBY+5GwAAgxlY8Jo7AgAwiGEFx7grAAA3GVRwjjsDAHCRIQXXuDsAACcZUHCPOwQAcJDhBGO4SwAAbxhMMJY7BQDwhKEEc7hbAAD/MJBgLncMAOAnwwjWcNcAgPYMIljLnQMA2jKEYA93DwBoxwCCvdxBAKANwwdicBcBgPIMHojFnQQAyjJ0ICZ3EwAox8CB2NxRAKAMwwZycFcBgPQMGsjFnQUA0jJkICd3FwBIx4CB3NxhACANwwVqcJcBgPAMFqjFnQYAwjJUoCZ3GwAIx0CB2txxACAMwwR6cNcBgO0MEujFnQcAtjFEoCd3HwBYzgCB3mQAALCM4QF8IwsAgOkMDuAjmQAATGNoAI/IBgBgOAMDeEVGAADDGBbAEbICALjNoADOkBkAwGWGBHCF7AAATjMggDtkCABwmOEAjCBLAIC3DAZgJJkCADxlKAAzyBYA4BMDAZhJxgAAvxkGwAqyBgAwCIClZA4ANGYIADvIHgBoyAAAdpJBANCI4gcikEUA0IDCByKRSQBQmKIHIpJNAFCQggcik1EAUIhiBzKQVQBQgEIHMpFZAJCYIgcykl0AkJACBzKTYQCQiOIGKpBlAJCAwgYqkWkAEJiiBiqSbQAQkIIGKpNxABCIYgY6kHUAEIBCBjqReQCwkSIGOpJ9ALCBAgY6k4EAsJDiBZCFALCEwgX4QyYCwESKFuAz2QgAEyhYgOdkJAAMpFgB3pOVADCAQgU4TmYCwA2KFOA82QkAFyhQgOtkKACcoDgB7pOlAHCAwgQYR6YCwAuKEmA82QoADyhIgHlkLAB8oBgB5pO1APCVQgRYR+YC0JoiBFhP9gLQkgIE2EcGA9CK4gPYTxYD0ILCA4hDJgNQmqIDiEc2A1CSggOIS0YDUIpiA4hPVgNQgkIDyENmA5CaIgPIR3YDkJICA8hLhgOQiuICyE+WA5CCwgKoQ6YDEJqiAqhHtgMQkoICqEvGAxCKYgKoT9YDEIJCAuhD5gOwlSIC6Ef2A7CFAgLoSwcAsJTiAUAXALCEwgHgF50AwFSKBoB/6QYAplAwADyjIwAYSrEA8I6uAGAIhQLAUToDgFsUCQBn6Q4ALlEgAFylQwA4RXEAcJcuAeAQhQHAKDoFgJcUBQCj6RYAHlIQAMyiYwD4i2IAYDZdA8B3CgGAVXQOQHOKAIDVdA9AUwoAgF10EEAzgh+A3XQRQBMCH4AodBJAcYIegGh0E0BRAh6AqHQUQDGCHYDodBVAEQIdgCx0FkByghyAbHQXQFICHICsdBhAMoIbgOx0GUASAhuAKnQaQHCCGoBqdBtAUAIagKp0HEAwghmA6nQdQBACGYAudB7AZoIYgG50H8AmAhiArnQgwGKCF4DudCHAIgIXAH7QiQCTCVoA+JtuBJhEwALAYzoSYDDBCgCv6UqAQQQqAByjMwFuEqQAcI7uBLhIgALANToU4CTBCQD36FKAgwQmAIyhUwHeEJQAMJZuBXhCQALAHDoW4B+CEQDm0rUAPwlEAFhD5wLtCUIAWEv3Am0JQADYQwcD7Qg+ANhLFwNtCDwAiEEnA+UJOgCIRTcDZQk4AIhJRwPlCDYAiE1XA2UINADIQWcD6QkyAMhFdwNpCTAAyEmHA+kILgDITZcDaQgsAKhBpwPhCSoAqEW3A2EJKACoSccD4QgmAKhN1wNhCCQA6EHnA9sJIgDoRfcD2wggAOjJBgCWEzwA0JstACwjcACAb2wCYDpBAwB8ZBsA0wgYAOARGwEYTrAAAK/YCsAwAgUAOMJmAG4TJADAGbYDcJkAAQCusCGA0wQHAHCHLQEcJjAAgBFsCuAtQQEAjGRbAE8JCABgBhsD+EQwAAAz2RrAbwIBAFjB5gAEAQCwlO0BjQkAAGAHGwQacvEBgJ1sEWjEhQcAIrBJoAEXHQCIxDaBwlxwACAiGwUKcrEBgMhsFSjEhQYAMrBZoAAXGQDIxHaBxFxgACAjGwYScnEBgMxsGUjEhQUAKrBpIAEXFQCoxLaBwFxQAKAiGwcCcjEBgMpsHQjEhQQAOrB5IAAXEQDoxPaBjVxAAKAjGwg2cPEAgM5sIVjIhQMAsIlgCRcNAOAP2wgmcsEAAD6zkWACFwsA4DlbCQZyoQAA3rOZYAAXCQDgONsJbnCBAADOs6HgAhcHAOA6WwpOcGEAAO6zqeAAFwUAYBzbKpovX/4POFKhpWYkGU0AAAAASUVORK5CYII=);
+		}
+	</style>
+	<title>
+	</title>
+	<script type='text/JavaScript'>
+// http://www.network-science.de/ascii/
+// ____________________________________________
+//|                                            |
+//|    _________ _       __________________    |
+//|    \__   __/( (    /|\__   __/\__   __/    |
+//|       ) (   |  \  ( |   ) (      ) (       |
+//|       | |   |   \ | |   | |      | |       |
+//|       | |   | (\ \) |   | |      | |       |
+//|       | |   | | \   |   | |      | |       |
+//|    ___) (___| )  \  |___) (___   | |       |
+//|    \_______/|/    )_)\_______/   )_(       |
+//|                                            |
+//|____________________________________________|
+
+/// Globale Variablen //
+var ctx;       // Canvas Context
+var grid;      // alle Daten die Welt enthält
+var view;      // für die aktuelle Grafik-Ausgabe 
+var player;    // Daten zum Spieler in der Welt
+var keyControl;// Eingabe
+var game;      // sonstige Variablen des Gesamten spiels
+
+window.onload=init;
+//init() Initialisierung der Variablen;
+function init(){
+	// // > V e r s i o n i e r u n g : < // //
+	var VERSION = 0.8;
+	VERSION = VERSION+"";
+	var VERSION_STRING = "B&P V "+VERSION;
+	document.title =  VERSION_STRING;
+	document.getElementById("title" ).textContent = VERSION_STRING;
+	
+	// // > I n i t i a l i s i e  r u n g : < // //
+	console.log("init() start");
+	ctx = document.getElementById("canMain").getContext("2d");
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//  ####  #####  # #####  
+	// #    # #    # # #    # 
+	// #      #    # # #    # 
+	// #  ### #####  # #    # 
+	// #    # #   #  # #    # 
+	//  ####  #    # # #####  
+	/// Init. von grid ///
+	grid = new Object();
+	grid.dimX = 500; //Grenzen on x und Y Richtung
+	grid.dimY = 500; 
+	grid.data = new Array(grid.dimX); //Array der Zeilen
+	for (var x = 0; x<grid.dimX;x++){ // Interation über die Zeilen
+		grid.data[x] = new Array(grid.dimY);// Array der Zeilen-Elemente
+		for (var y = 0; y<grid.dimY;y++){
+			grid.data[x][y] = (Math.random()<0.005); // Liefert in 20% der Fälle TRUE
+		}
+	}
+	grid.fill = true;// Man füllt mit diesem Wert am Rand auf
+	grid.get = function(xVar,yVar){
+		xVar = Math.floor(xVar); // abrunden
+		yVar = Math.floor(yVar);
+		
+		if ((xVar>this.dimX-1)||(yVar>this.dimY-1)) //zu große Werte
+			return this.fill;
+		
+		if ((xVar<0)||(yVar<0)) //zu kleine Werte
+			return this.fill;
+		return grid.data[xVar][yVar];
+	}
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// #    # # ###### #    # 
+	// #    # # #      #    # 
+	// #    # # #####  #    # 
+	// #    # # #      # ## # 
+	//  #  #  # #      ##  ## 
+	//   ##   # ###### #    # 
+	/// Init. von view ///
+	view = new Object();
+	view.resX = 800; //Auflösung der Ausgabe
+	view.resY = 600;
+	view.zoomX = 10; //Größe eines Einheitsblockes
+	view.zoomY = 10;
+	
+	view.centerX = grid.dimX/2; //Mitte des Betrachteten Bereiches
+	view.centerY = grid.dimY/2;
+	
+	view.fovX = Math.round((view.resX/view.zoomX)/2)+1; // Anzahl der Blöcke in eine Richtung
+	view.fovY = Math.round((view.resY/view.zoomY)/2)+1;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// #####  #        ##   #   # ###### #####  
+	// #    # #       #  #   # #  #      #    # 
+	// #    # #      #    #   #   #####  #    # 
+	// #####  #      ######   #   #      #####  
+	// #      #      #    #   #   #      #   #  
+	// #      ###### #    #   #   ###### #    # 
+	/// Init. von player ///
+	player = new Object();
+	player.posX = grid.dimX/2;
+	player.posY = grid.dimY/2;
+	
+	player.sizeX = 3;
+	player.sizeY = 3;
+	
+	//player.jumpStart
+	
+	
+	//player.accelerationX = 20;
+	//player.accelerationY = 20;
+	
+	player.movementX = 10;
+	player.movementY = 20;
+	
+	player.gravityY = 30;
+	
+	//player.jumpSpeed
+	player.onGround = false;
+	
+	
+	player.speedX=0;
+	player.speedY=0;
+	
+	
+	
+	player.maxSpeedX=20; // 3m/s ~ 10km/h
+	player.maxSpeedY=20; // no limit
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// #    # ###### #   # 
+	// #   #  #       # #  
+	// ####   #####    #   
+	// #  #   #        #   
+	// #   #  #        #   
+	// #    # ######   #   
+	/// init. von keyControl ///
+	keyControl = new Object();
+	keyControl. left = false; 
+	keyControl.right = false; 
+	keyControl.   up = false; 
+	keyControl. down = false;
+	
+	keyControl. leftKey = 65; //A
+	keyControl.rightKey = 68; //D
+	keyControl.   upKey = 87; //W
+	keyControl. downKey = 83; //S
+	
+	
+	document.onkeydown = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		setKey(key, true);
+	});
+	
+	document.onkeyup = (function(e){
+		//e.preventDefault();
+		var key = e.charCode || e.keyCode;
+		setKey(key, false);
+	});
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//  ####    ##   #    # ###### 
+	// #    #  #  #  ##  ## #      
+	// #      #    # # ## # #####  
+	// #  ### ###### #    # #      
+	// #    # #    # #    # #      
+	//  ####  #    # #    # ###### 
+	/// Init. von game ///
+	game = new Object();
+	game.tickInterval = 1/60;//60Hz
+	game.lastTick = getTime();
+	
+	tick();
+	setInterval(tick, 1000*game.tickInterval);
+	//setInterval(tick, 10000); //debug
+	console.log("init() ende");
+}
+
+
+
+// ____________________________________________
+//|                                            |
+//|     ______   _______  _______              |
+//|    (  __  \ (  ____ )(  ___  )|\     /|    |
+//|    | (  \  )| (    )|| (   ) || )   ( |    |
+//|    | |   ) || (____)|| (___) || | _ | |    |
+//|    | |   | ||     __)|  ___  || |( )| |    |
+//|    | |   ) || (\ (   | (   ) || || || |    |
+//|    | (__/  )| ) \ \__| )   ( || () () |    |
+//|    (______/ |/   \__/|/     \|(_______)    |
+//|                                            |
+//|____________________________________________|
+//draw() Zeichnet das Spielfeld
+function draw(deltaTimeVar){
+	ctx.clearRect(0,0,view.resX,view.resY);
+	
+	//// Spielfeld ////
+	var rx = mod(view.centerX); // Verschiebung der Welt um Werte [0,1]
+	var ry = mod(view.centerY);
+	
+	for (var x = -view.fovX; x<view.fovX;x++){ // Interation über die Zeilen
+	for (var y = -view.fovY; y<view.fovY;y++){
+		var left = (x-rx)  *view.zoomX +(view.resX/2); // von der Mitte ausgehend werden die Blöcke in die Welt gesetzt
+		var top  = (y-ry+1)*view.zoomY +(view.resY/2);
+		
+		var width  = view.zoomX-1; //Macht die Blockränder sichtbar.
+		var height = view.zoomY-1;
+		
+		if(grid.get(x+view.centerX,y+view.centerY)){//Der Block ist gefüllt
+			ctx.fillStyle = "rgba(0,0,0,0.4)";
+		}else{ // Der Block ist leer 
+			ctx.fillStyle = "rgba(255,255,255,0.4)";
+		}
+		
+		var bottom = view.resY-top;
+		ctx.fillRect(left,bottom,width, height);
+	}
+	}
+	
+	/// Spieler ///
+	var left =player.posX -view.centerX;
+	var top  =player.posY -view.centerY;
+	
+	left -= player.sizeX/2;
+	top  += player.sizeY/2;
+	
+	left *= view.zoomX;
+	top  *= view.zoomY;
+	
+	left +=(view.resX/2);
+	top  +=(view.resY/2);
+	
+	var width  = player.sizeX*view.zoomX;
+	var height = player.sizeY*view.zoomY;
+	
+	var bottom = view.resY-top;
+	
+	ctx.fillStyle = "rgba(255,0,0,0.4)"; 
+	ctx.fillRect(left,bottom,width, height);
+	
+	//////////////
+	// Debuging //
+	//////////////
+	
+	ctx.fillStyle = "lime";
+	ctx.font = "16px Consolas";
+	ctx.fillText(deltaTimeVar+"s", 0,10);
+	var hz = 1/deltaTimeVar
+	ctx.fillText(hz+"hz", 00,30);
+	ctx.fillRect(5,35,hz*3, 2);
+	
+}
+
+
+    
+// _____________________________________________________________
+//|                                                             |
+//|                                                             |
+//|     _______  _______  _______  _______  _        _______    |
+//|    (  ____ )(  ____ \(  ____ \(  ___  )( \      (  ____ \   |
+//|    | (    )|| (    \/| (    \/| (   ) || (      | (    \/   |
+//|    | (____)|| (__    | |      | (___) || |      | |         |
+//|    |     __)|  __)   | |      |  ___  || |      | |         |
+//|    | (\ (   | (      | |      | (   ) || |      | |         |
+//|    | ) \ \__| (____/\| (____/\| )   ( || (____/\| (____/\   |
+//|    |/   \__/(_______/(_______/|/     \|(_______/(_______/   |
+//|                                                             |
+//|_____________________________________________________________|
+//recalc()
+function recalc(deltaTimeVar){
+	/// Beschleunigen ///
+	var deltaX=0;
+	var deltaY=0;
+	console.log(player.speedY,"speed0");
+	if (keyControl.left)
+		deltaX -= deltaTimeVar*player.movementX;
+	if (keyControl.right)
+		deltaX += deltaTimeVar*player.movementX;
+		
+	/*if (keyControl.down)
+		player.speedY -= deltaTimeVar*player.accelerationY;
+	*/
+	if (keyControl.up&player.onGround){
+		player.speedY = player.movementY;
+	}
+	player.speedY -= player.gravityY*deltaTimeVar; //Anwendung der Gravitation
+	
+	deltaY = deltaTimeVar*player.speedY; // Bewegung 
+	player.onGround = false;
+	
+	
+	
+	player.speedY = limitTo(player.speedY,-player.maxSpeedY,player.maxSpeedY);
+	
+	
+	
+	
+	/// Bewegung nach links ///
+	if (deltaX<0){
+	 	var minX = player.posX+deltaX;//Bestimmt die Grenzen der Bewegung
+		
+		var stop = false;
+		var right = Math.floor(player.posX -player.sizeX/2)-1;
+		var left= Math.ceil(player.posX -player.sizeX/2+deltaX)-1;
+		
+		for(var x = right; (x<= left)&!stop; x++){
+		//von der Linken Kante aus prüft man linkswärts von rechts nach links
+			var bottom=Math.floor(player.posY -player.sizeY/2);
+			var top   = Math.ceil(player.posY +player.sizeY/2)-1;
+			for(var y = bottom; (y<= top)&!stop; y++){
+				//es wird nun entlang der Knate geprüft, von unten nach oben
+				var d = x+1+player.sizeX/2;
+				if(grid.get(x,y)&(d>minX)){
+				//	minX = x+1+player.sizeX/2; //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					minX = Math.max(minX,x+1+player.sizeX/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+				//	stop = true;
+					
+				}
+			}	
+		}
+		minX = Math.min(player.posX, minX);//man soll sich nicht in die Gegenrichtung bewegen
+		player.posX = minX;
+	}
+	
+	/// Bewegung nach rechts ///
+	if (deltaX>0){	
+		var maxX = player.posX+deltaX;//Bestimmt die Grenzen der Bewegung
+		var stop = false;
+		var left = Math.floor(player.posX +player.sizeX/2);
+		var right= Math.ceil(player.posX +player.sizeX+deltaX)-1;
+		for(var x = left; (x<= right)&!stop; x++){
+		//von der Rechte Kante aus prüft man rechtswärts von links nach rechts
+			var bottom= Math.floor(player.posY -player.sizeY/2);
+			var top   = Math.ceil(player.posY +player.sizeY/2)-1;
+			for(var y = bottom; (y<= top)&!stop; y++){
+				//es wird nun entlang der Kante geprüft, von unten nach oben
+				var d = x-player.sizeX/2;
+				if(grid.get(x,y)&(d<maxX)){
+				//	minX = x+1+player.sizeX/2; //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					maxX = Math.min(maxX,d); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+				//	stop = true;
+					
+				}	
+			}
+		}	
+	
+		maxX = Math.max(player.posX, maxX);//man soll sich nicht in die Gegenrichtung bewegen
+		player.posX = maxX;
+	}
+	
+	/// Bewegung nach unten ///
+	if (deltaY<=0){
+	 	var minY = player.posY+deltaY;//Bestimmt die Grenzen der Bewegung
+		
+		var stop = false;
+		var right = Math.floor(player.posY -player.sizeY/2)-1;
+		var left= Math.ceil(player.posY -player.sizeY/2+deltaY)-1;
+		for(var x = right; (x<= left)&!stop; x++){
+		//von der Linken Kante aus prüft man linkswärts von rechts nach links
+			var bottom=Math.floor(player.posX -player.sizeX/2);
+			var top   = Math.ceil(player.posX +player.sizeX/2)-1;
+			for(var y = bottom; (y<= top)&!stop; y++){
+				//es wird nun entlang der Knate geprüft, von unten nach oben
+				var d = x+1+player.sizeY/2;
+				
+				if(grid.get(y,x)&(d>minY)){
+					//	minX = x+1+player.sizeX/2; //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					minY = Math.max(minY,x+1+player.sizeY/2); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					//	stop = true;
+				
+				}
+			}	
+		}
+		minY = Math.min(player.posY, minY);//man soll sich nicht in die Gegenrichtung bewegen
+		if (player.posY == minY){
+			player.speedY = 0;
+			player.onGround = true;
+		}	
+		player.posY = minY;
+	}
+	
+	/// Bewegung nach oben ///
+	if (deltaY>=0){
+		var maxY = player.posY+deltaY;//Bestimmt die Grenzen der Bewegung
+		var stop = false;
+		var left = Math.floor(player.posY +player.sizeY/2);
+		var right= Math.ceil(player.posY +player.sizeY+deltaY)-1;
+		for(var x = left; (x<= right)&!stop; x++){
+		//von der Rechte Kante aus prüft man rechtswärts von links nach rechts
+			var bottom= Math.floor(player.posX -player.sizeX/2);
+			var top   = Math.ceil(player.posX +player.sizeX/2)-1;
+			for(var y = bottom; (y<= top)&!stop; y++){
+				//es wird nun entlang der Kante geprüft, von unten nach oben
+				var d = x-player.sizeY/2;
+				if(grid.get(y,x)&(d<maxY)){
+				//	minX = x+1+player.sizeX/2; //man muss hier die Rechte Kante des neunen Blockes betrachten.
+					maxY = Math.min(maxY,d); //man muss hier die Rechte Kante des neunen Blockes betrachten.
+				//	stop = true;
+					
+				}	
+			}
+		}	
+	
+		maxY = Math.max(player.posY, maxY);//man soll sich nicht in die Gegenrichtung bewegen
+		if (player.posY == maxY)
+			player.speedY = 0;
+		
+		player.posY = maxY;
+	}
+	
+	
+	var a = 1e3;
+	
+	
+	/*
+	view.centerX = Math.round(player.posX*a)/a;
+	view.centerY = Math.round(player.posY*a)/a;
+	*/
+	var f = function(x){
+		if(x == 0)
+			return 0
+		abs = Math.abs(x); //Betrag
+		sign = abs/x;      //Vorzeichen
+		//return sign*Math.pow(abs*5,2)*0.0001;
+		return sign*(abs)*0.05;
+	}
+	
+	view.centerX = limitTo(view.centerX-f(view.centerX-player.posX),player.posX-5,player.posX+5);
+	view.centerY = limitTo(view.centerY-f(view.centerY-player.posY),player.posY-5,player.posY+5);
+}
+
+
+// ____________________________________________ 
+//|                                            |
+//|     _______ _________ _______  _______     |
+//|    (       )\__   __/(  ____ \(  ____ \    |
+//|    | () () |   ) (   | (    \/| (    \/    |
+//|    | || || |   | |   | (_____ | |          |
+//|    | |(_)| |   | |   (_____  )| |          |
+//|    | |   | |   | |         ) || |          |
+//|    | )   ( |___) (___/\____) || (____/\    |
+//|    |/     \|\_______/\_______)(_______/    |
+//|                                            |
+//|____________________________________________|
+
+//tick() wird in jeder Iteration ausgeführt
+function tick(){
+	var now = getTime();
+	var elapsedTime = now - game.lastTick; 
+	game.lastTick = getTime();
+	draw(elapsedTime);
+	recalc(elapsedTime);
+	
+}
+
+//mod(a) mit der Eigenschaft Math.floor(a)+mod(a)=a;
+function mod(a) {
+	return ((a%1)<0 )?( (a%1)+1):(a%1);
+}
+
+//Beschränkt x auf das Intervall [min,max]
+function limitTo(xVar,minVar,maxVar){
+	var min = Math.min(minVar,maxVar); // so kann man nicht verwechseln oder falsche Werte erhalten
+	var max = Math.max(minVar,maxVar);
+	
+	if(xVar<min)   // zu klein
+		return min;
+	if(xVar>max)   // zu groß
+		return max;
+	return xVar	      //Ausrechend beschränkt
+}
+
+// liefert einen Zeit Stempel in Sekunden seit 1970-01-01 00:00:00 UTC.
+function getTime(){
+	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+	var now = (new Date()).getTime()/1000;
+	return now;
+}
+
+
+// ____________________________________________ 
+//|                                            |
+//|    _______  _______ _________              |
+//|    (       )(  ___  )\__   __/|\     /|    |
+//|    | () () || (   ) |   ) (   | )   ( |    |
+//|    | || || || (___) |   | |   | (___) |    |
+//|    | |(_)| ||  ___  |   | |   |  ___  |    |
+//|    | |   | || (   ) |   | |   | (   ) |    |
+//|    | )   ( || )   ( |   | |   | )   ( |    |
+//|    |/     \||/     \|   )_(   |/     \|    |
+//|                                            |
+//|____________________________________________|
+
+
+
+
+function math(){
+
+
+
+/*
+	s	weg/strecke
+	v	Geschwindigkeit
+	a	Beschleunigung
+
+Es gilt:
+         _ x=t        |         _ x=t        |
+        /             |        /             |
+ s(t) = |  v(x) dx    | v(t) = |  a(x) dx    |
+       _/             |       _/             |
+           x=0        |           x=0        |
+  s'(t)= v(t)         |  v'(t) = a(t)        |
+
+a = const.
+a ist nach unten gerichtet.
+
+Zu jedem Zeitpunk ist die Spielfigur der Gravitation aus gesetzt, die den Spieler, wenn möglich nach unten bewegt.
+Man nimmt an das man beim Absprung direkt eine Absprung-Geschwindigkeit hat (unendliche Beschleunigung).
+
+                      t0+Δt           t0+Δt                   t= t0+Δt
+                        /               /                       | 
+Δs = s(t0+Δs) - s(t0) = |  v(t) dt  =   |   a t dt = 1/2 a t^2  |      
+                        /               /                       |
+                       t0              t0                     t= t0
+
+                      = 1/2 a ((t0+Δt)^2 - t0^2)   = 1/2 a (Δt^2 + t0*Δt) 
+                      = 1/2 Δt (a t0 + a* Δt)
+                      = 1/2 Δt ()
+                      =
+                      =
+
+     /|\
+      |
+ s(t) |
+      |                      ___                    
+      |                  __.´    `.__                    
+      |               _.´ '          `._            
+      |             .´    '             `.          
+      |           _/      '               \_         
+      |          /       Δs                 \      
+      |        _/         '                  \_      
+      |       /           '                    \   
+      |      / _  _Δt _ _ '                     \  
+      |     /                                    \ 
+      |    /                                      \                
+     -|---/---,------------------------------------\--------------->
+      |       t0                                    |     t        
+      |                                              \           
+      |                                              |          
+      |                                               \         
+      |                                                |        
+      |                                                \        
+      |                                                 |        
+      |                                                 \       
+      |                                                  |      
+      |                                                  \      
+      |                                                   |     
+      |                                                   \     
+      |                                                    |    
+      |                                                    |   
+      |                                                    |  
+	 
+*/
+}
+
+</script>
+
+<!--  ######  ####### #     #  -->
+<!--  #     # #     # ##   ##  -->
+<!--  #     # #     # # # # #  -->
+<!--  #     # #     # #  #  #  -->
+<!--  #     # #     # #     #  -->
+<!--  #     # #     # #     #  -->
+<!--  ######  ####### #     #  -->
+                        
+</head><body>
+	<h3 id="title"></h3>
+	<hr>
+	<!-- Hauptfenster-->
+	<canvas width="800" height="600" id="canMain" class="layer">Kein Canvas verfügbar!</canvas>
+</body></html>
+
